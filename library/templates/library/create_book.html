@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Book{% endblock title %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Form Image -->
+        <div class="col-xl-4 col-md-6 mb-1">
+            <div class="card h-100 w-100 d-flex" style="width: 18rem;">
+            <div class="p-4 h-100">
+                <img src="{{ MEDIA_URL }}images/default.webp" class="card-img-top w-100 border rounded" alt="..." id="image-preview" width="305" height="500">
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="image-input" name="image">
+                </div>
+            </div>
+            </div>
+        <!-- End Form Image -->
+        </div>
+        <!-- Form Book info -->
+        <div class="col-xl-8 col-md-6 d-flex">
+            <div class="w-100 my-auto">
+                <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Name</span>
+                <input name="name" type="text" class="form-control" placeholder="Name" aria-label="Name" aria-describedby="basic-addon1">
+                </div>
+    
+                <div class="input-group mb-3">
+                <span class="input-group-text">Description</span>
+                <textarea name="description" class="form-control" aria-label="With textarea" placeholder="Description" style="height: 200px;"></textarea>
+                </div>
+                
+                <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Tags</span>
+                <input type="text" class="form-control" placeholder="Tags" aria-label="Tags" aria-describedby="basic-addon1" style="height: 50px;" name="tags">
+                </div>
+    
+                <div class="input-group mb-3">
+                <span class="input-group-text">Price: $</span>
+                <input name="price" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Price">
+                <span class="input-group-text">.00</span>
+                </div>
+            </div>
+        </div>
+        <!-- End From Book Image -->
+
+        <div class="container-fluid mt-3">
+            <button type="submit" class="btn btn-success w-100 fs-2 mb-3">Send</button>
+        </div>
+
+    </div>
+</form>
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'library/js/create_book_image_preview.js' %}"></script>
+{% endblock script %}

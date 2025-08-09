@@ -9,8 +9,8 @@
 <!-- End Search field -->
 <section class="mt-4">
     <!-- Title/Create book -->
-    {% comment %} <h1 class="m-0">Books:<a href="{% url 'library:create_book' %}" class="btn btn-success ms-3 fs-5"> Create Book <i
-                class="bi bi-pencil-fill"></i></a></h1> {% endcomment %}
+    <h1 class="m-0">Books:<a href="{% url 'library:create_book' %}" class="btn btn-success ms-3 fs-5"> Create Book <i
+                class="bi bi-pencil-fill"></i></a></h1>
     <!-- End Title/Create book-->
 
     {% if books %}
@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <!-- Image book and info button -->
                         <div class="text-center">
-                            <a href="{{book.get_absolute_url}}">
+                            <a href="#">
                                 <img src="{{book.image.url}}" alt="{{book.title}}"
                                     class="mb-3 position-relative img-thumbnail" style="height: 280px">
                                 {% comment %} <button class="position-absolute start-0 top-0 bg-white border rounded-circle"
@@ -56,7 +56,7 @@
                         <!-- End Image book and info button -->
 
                         <!-- Book Title -->
-                        <a class="card-title h6 link-underline link-underline-opacity-0 ktn-text-truncate" href="{{book.get_absolute_url}}">
+                        <a class="card-title h6 link-underline link-underline-opacity-0 ktn-text-truncate" href="#">
                             {{book.title}}
                         </a>
                         <!-- End Book Title -->
