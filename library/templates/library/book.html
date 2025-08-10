@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Book{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <!-- Book Image -->
+    <div class="col-xl-3 col-md-6 w-10">
+        <img class="img-thumbnail"  src="{{book.image.url}}" alt="{{book.title}}" style="height: 550px;">
+    </div>
+    <!-- End Book Image -->
+    <!-- Book description-->
+    <div class="col-xl-6 col-md-6 bg-white rounded p-3" >
+        <h1>{{book.title}}</h1>
+        <p class="fs-4"> Author: {{book.author}}</p> 
+        <hr>
+        <span class="fs-4"> Description:</span>
+        <p class="fs-6">{{book.description}}
+        </p>
+        <small class="d-flex align-item-center">
+            <div class="text-warning gap-1" style="user-select: none;">
+                {% for i in rating %}
+                    {% if i == 1 %}
+                        <i class="bi bi-star-fill"></i>
+                    {% elif i == 0.5 %}
+                        <i class="bi bi-star-half"></i>
+                    {% else %}
+                        <i class="bi bi-star"></i>
+                    {% endif %}
+                {% endfor %}
+                {% comment %} <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-half"></i> {% endcomment %}
+            </div>
+            <p class="ms-2">{{book.rating}} <span class="ms-2">({{book.feedbacks}})</span></p>
+        </small>
+        {% if book.tags.all%}
+            <p class="mb-0 fs-5">Tags:</p>
+            <div class="container">
+                <span>{{book.tags.all|join:", "|escape}}</span>
+            </div>
+            {% comment %} <p class="fs-4 mb-1">Tags:</p>
+            <div class="container">
+            {% for tag in  book.tags.all %}
+                <span>{{tag}}, </span>
+                {% endfor %}
+            </div> {% endcomment %}
+        {% endif %}
+    </div>
+    <!-- End Book Description -->
+    <!-- Book Buy -->
+    <div class="col-xl-3 col-md-12">
+        <div class="text-center mt-5">
+            <p class="h1">{{book.price}}$</p>
+            <button class="btn btn-primary mt-3 w-100 fs-4">Buy <i class="bi bi-cart3"></i></button>
+            <hr>
+            <button class="btn btn-secondary w-100 fs-4">Add to cart <i class="bi bi-bookmark-fill"></i></button>
+        </div>
+    </div>
+    <!-- End Book Buy -->
+    <!-- Comments Field-->
+    {% comment %} <div class="col-fluid bg-white rounded mt-3 h-100">
+        <div class="container mt-2">
+            <p class="fs-3">Reviews <span class="fs-4 text-body-secondary">1</span></p>
+            <!-- Write Reviw -->  
+            <div class="container-fluidm mb-3">
+                <form class="d-flex" role="search">
+                <input class="form-control me-2 fs-4" type="search" placeholder="Comments" aria-label="Search"/>
+                <button class="btn btn-success fs-4 d-flex" type="submit">Search <i class="bi bi-search ms-2"></i></button>
+                </form>
+            </div>
+            <!-- End Write Reviw -->
+            <!-- Other Rivews -->
+            <div class="mb-4">
+                <!-- One Review -->
+                <div class="bg-secondary-subtle rounded p-3">
+                    
+                    <!-- Avatar, date, feedback-->
+                    <div class="row">
+                        <!-- Avatar -->
+                        <div class="col-xl-1 col-md-2 col-4 d-flex">
+                            <a href="#" class="m-auto">
+                                <img src="avatar.jpg" alt="kotoninja" width="50px" height="50px" style="border-radius: 50%;">
+                            </a>
+                        </div>
+                        <!-- End Avatar  -->    
+                            
+                        <div class="vr col-xl-1 col-md-2 col-4 p-0"></div>
+                            
+                        <!-- Data -->
+                        <div class="col-xl-8 col-md-6 col-7">
+                            <a href="#" class="d-block fs-4 text-dark link-underline link-underline-opacity-0">Kotoninja</a>
+                            <span class="fs-6">23.07.25</span>
+                        </div>
+                        <!-- End Data -->
+
+                        <!-- Feedback -->
+                        <div class="col-xl-2 col-md-3 col-fuild m-auto mt-3" style="user-select: none;">
+                            <small class="text-warning fs-5 d-flex">
+                                <div class="m-auto">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <i class="bi bi-star-fill me-1"></i>
+                                </div>
+                            </small>
+                        </div>
+                        <!-- End Feedback -->
+
+                    </div>
+                    <!-- End Avatar, date, feedback-->
+                    
+                    <!-- User Opinion -->
+                    <div class="row container">
+                        <!-- User Comment -->
+                        <div class="col-fluid mt-2 fs-4 d-flex flex-wrap">
+                            <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis minus, architecto dicta iste doloremque animi magni? Amet exercitationem magnam non repellendus fugiat sed rerum, voluptatibus maxime. Iste deleniti, quas iusto rerum ex excepturi esse inventore quae aspernatur voluptates quam autem quia consequatur. Itaque, veniam omnis earum cum, repellat enim temporibus explicabo perspiciatis amet ut vitae minima ex est provident delectus placeat! Corrupti, explicabo deserunt? Aut ratione accusantium quo cupiditate soluta eveniet ad earum molestiae porro officiis aliquam eius dignissimos voluptatum debitis, cumque, sit minus, error quisquam dolor hic quos. Id esse rem fugiat voluptates nesciunt nemo obcaecati ab quam ipsum incidunt ex eligendi explicabo eius laboriosam atque cupiditate illo facere, praesentium quos nihil? Doloremque excepturi tempora sint velit nobis? Quam fuga eum deserunt alias? Facere voluptatibus totam tempore assumenda odit sint neque rerum repellendus officia distinctio libero consectetur esse voluptatum provident fugit quo, deleniti tempora! Architecto iste eaque maiores magni excepturi quisquam sequi ex aliquid quo, quos harum modi dolores nobis quasi sint similique laudantium repellendus accusantium eius dolor omnis earum rem ut dolore. Sed, rem ad. Provident quas ea odio laborum alias, magni voluptate atque, ipsa vel earum fugit corporis dolorum debitis officiis veritatis sapiente similique, aliquam optio magnam.</span>
+                        </div>
+                        <!-- End User Comment -->
+                        
+                        <!-- Rate review -->
+                        <div class="d-flex mt-2 align-items-center fs-4">
+                            <button class="btn fs-4 p-1">
+                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                            </button>
+                            <span class="me-3">100</span>
+
+                            <button class="btn fs-4 p-1">
+                                <i class="bi bi-hand-thumbs-down-fill"></i>
+                            </button>
+                            <span>15</span>
+                        </div>
+                        <!-- End Rate review -->
+                    </div>
+                    <!-- End User Opinion -->
+                </div>
+                <!-- End One Reviw -->
+            </div>
+            <!-- End Other Reviws -->
+        </div>
+    </div> {% endcomment %}
+    <!-- End Comments Field-->
+</div>
+{% endblock content %}

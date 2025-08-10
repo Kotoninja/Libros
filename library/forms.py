@@ -3,7 +3,9 @@ from .models import *
 
 
 class CreateBookForm(forms.ModelForm):
-
+    def __init__(self,*args, **kwargs):
+        super(CreateBookForm,self).__init__(*args, **kwargs)
+        self.fields["tags"].required = False
     class Meta:
         model = Book
         fields = ["image", "title", "description", "tags", "price"]

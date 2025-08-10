@@ -23,7 +23,7 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self) -> str:
-        return reverse("library:book", kwargs={"pk": self.pk})
+        return reverse("library:book", args=(self.pk,))
 
     def tags_str(self) -> str:
         return ", ".join(o.name for o in self.tags.all())
