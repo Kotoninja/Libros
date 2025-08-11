@@ -2,22 +2,57 @@
 {% load static %}
 {% block title %}Home{% endblock title %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'library/css/style.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
+{% endblock css %}
+
 {% block content %}
-
-{% comment %} {% include "search_field.html" %} {% endcomment %}
-
-<!-- End Search field -->
 <section class="mt-4">
     <!-- Title/Create book -->
     <h1 class="m-0">Books:<a href="{% url 'library:create_book' %}" class="btn btn-success ms-3 fs-5"> Create Book <i
                 class="bi bi-pencil-fill"></i></a></h1>
     <!-- End Title/Create book-->
+    
+    <!-- Pagination -->
+    {% comment %} {% if page_obj.has_other_pages %}
+    <div class="mt-2 d-flex justify-content-center align-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{page_obj.previous_page_number}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
 
-    {% if books %}
-    <div class="bg-secondary-subtle mt-3 p-3 rounded">
-        <div class="row g-1 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-2">
+                {% for page in page_obj.paginator.page_range %}
+                {% if page == page_obj.number %}
+                    <li class="page-item active"><a class="page-link" aria-current="page">{{page}}</a></li>
+                {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                    <li class="page-item"><a class="page-link" href="?page={{page}}" aria-current="page">{{page}}</a></li>
+                {% endif %}
+
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{page_obj.next_page_number}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %} {% endcomment %}
+    <!-- End Pagination-->
+    
+    {% if page_obj %}
+    <div class="bg-secondary-subtle mt-2 p-3 rounded">
+        <div class="row g-1 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-2" id="col">
             <!-- One Book Field -->
-            {% for book in books %}
+            {% for book in page_obj %}
             <div class="col">
                 <div class="card">
                     <div class="card-body">
@@ -84,8 +119,21 @@
                     </div>
                 </div>
                 <!-- End One Book Field -->
+
+                <!-- htmx pagination -->
+                {% if page_obj.has_next and forloop.last%}
+                    <div
+                        hx-get="{% url 'library:home' %}?page={{ page_obj.next_page_number }}"
+                        hx-swap="beforeend"
+                        hx-target="#col"
+                        hx-select=".col"
+                        hx-trigger="revealed">
+                    </div>
+                {% endif %}
+                <!-- End htmx pagination -->
             </div>
             {% endfor %}
+
         </div>
     </div>
     {% else %}

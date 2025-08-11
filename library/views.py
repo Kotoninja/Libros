@@ -1,7 +1,8 @@
 # Django
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 # Other
 from .models import Book
@@ -9,8 +10,12 @@ from .forms import CreateBookForm
 
 
 def home(request):
-    context = {"books": Book.objects.all()}
-    return render(request, "library/home.html", context=context)
+    paginator = Paginator(Book.objects.all(),12)
+    
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "library/home.html", {"page_obj": page_obj})
 
 
 def book(request, id):

@@ -1,0 +1,12 @@
+.ktn-text-truncate {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.ktn-rounded-navbar {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}

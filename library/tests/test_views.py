@@ -23,8 +23,13 @@ class BookViewsTestHomePage(TestCase):
         self.assertTemplateUsed(response, "library/home.html")
 
     def test_query_set(self):
-        response = self.client.get(reverse("library:home"))
-        self.assertQuerySetEqual(response.context["books"], Book.objects.all())
+        book_list = [i for i in Book.objects.all()]
+        
+        response = self.client.get(reverse("library:home") + "?page=1")
+        self.assertEqual(list(response.context["page_obj"]), book_list[:12])
+        
+        response = self.client.get(reverse("library:home") + "?page=2")
+        self.assertEqual(list(response.context["page_obj"]), book_list[12:])
 
 
 class BookViewsTestCreateBookPage(TestCase):
@@ -47,4 +52,3 @@ class BookViewsTestCreateBookPage(TestCase):
         self.assertTemplateUsed(response, "library/book.html")
         self.assertEqual(response.context["book"], Book.objects.get(pk=1))
         
-
