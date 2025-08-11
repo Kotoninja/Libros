@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Book{% endblock title %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Form Image -->
+        <div class="col-xl-4 col-md-6 mb-1">
+            <div class="card h-100 w-100 d-flex" style="width: 18rem;">
+            <div class="p-4 h-100">
+                <img src="/media/images/default.webp" class="card-img-top w-100 border rounded" alt="..." id="image-preview" width="305" height="500">
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    {{form.image}}
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- End Form Image -->
+
+         <!-- Form Book Info -->
+        <div class="col-xl-8 col-md-6 d-flex">
+            <div class="w-100 my-auto">
+                <div class="input-group md-3">
+                    {{form.fields.errors}}
+                </div>
+                <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Title</span>
+                {{form.title}}
+                </div>
+    
+                <div class="input-group mb-3">
+                <span class="input-group-text">Description</span>
+                {{form.description}}
+                </div>
+                
+                <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Tags</span>
+                {{form.tags}}
+                </div>
+    
+                <div class="input-group mb-3">
+                <span class="input-group-text">Price: $</span>
+                {{form.price}}
+                <span class="input-group-text">.00</span>
+                </div>
+            </div>
+        </div>
+        <!-- End From Book Info -->
+
+        <div class="container-fluid mt-3">
+            <button type="submit" class="btn btn-success w-100 fs-2 mb-3">Send</button>
+        </div>
+
+    </div>
+</form>
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'library/js/create_book_image_preview.js' %}"></script>
+{% endblock script %}
