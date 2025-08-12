@@ -33,12 +33,12 @@
                 </div>
 
                 <div class="col-lg-4 col-md-8 col-sm-8 col-8">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button class="btn btn-success" type="submit">Search</button>
+                    <form action="{% url 'library:search' %}" method="get" class="d-flex" role="search">
+                        {{search_form.search}}
+                        <button class="btn btn-primary d-flex" type="submit">Search<i class="bi bi-search ms-1"></i></button>
                     </form>
                 </div>
-                <button class="navbar-toggler col-md-1 col-sm-2 col-xs-1" type="button" data-bs-toggle="collapse"
+                <button class="navbar-toggler col-md-1 col-sm-2 col-xs-1 bg-secondary-subtle" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

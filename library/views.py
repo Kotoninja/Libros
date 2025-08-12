@@ -1,12 +1,14 @@
 # Django
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Other
 from .models import Book
 from .forms import CreateBookForm
+from core.forms import SearchForm
 
 
 def home(request):
@@ -38,4 +40,28 @@ def create_book(request):
 
 
 def search(request):
-    pass
+    context: dict = {}
+
+    if request.method == "GET":
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            search = form.cleaned_data["search"]
+            context["search"] = search
+            context["search_form"] = SearchForm(initial={"search": context["search"]})
+
+            books = Book.objects.filter(
+                Q(title__contains=context["search"])
+                | Q(description__contains=context["search"])
+                | Q(tags__name__in=[context["search"]])
+            ).distinct()
+
+            paginator = Paginator(books, 18)
+            page_number = request.GET.get("page")
+            page_obj = paginator.get_page(page_number)
+
+            context["page_obj"] = page_obj
+            context["amount"] = books.count()
+    else:
+        form = SearchForm()
+
+    return render(request, "library/search.html", context=context)
