@@ -45,22 +45,25 @@ def search(request):
     if request.method == "GET":
         form = SearchForm(request.GET)
         if form.is_valid():
-            search = form.cleaned_data["search"]
-            context["search"] = search
-            context["search_form"] = SearchForm(initial={"search": context["search"]})
+            search: str = form.cleaned_data["search"]
 
             books = Book.objects.filter(
-                Q(title__contains=context["search"])
-                | Q(description__contains=context["search"])
-                | Q(tags__name__in=[context["search"]])
+                Q(title__contains=search)
+                | Q(description__contains=search)
+                | Q(tags__name__in=search.split())
             ).distinct()
 
             paginator = Paginator(books, 18)
             page_number = request.GET.get("page")
             page_obj = paginator.get_page(page_number)
 
-            context["page_obj"] = page_obj
-            context["amount"] = books.count()
+            context |= {
+                "page_obj": page_obj,
+                "amount": books.count(),
+                "search": search,
+                "search_form": SearchForm(initial={"search": search}),
+                "paginator": paginator,
+            }
     else:
         form = SearchForm()
 

@@ -1,6 +1,8 @@
 from django.test import TestCase
 from library.models import Book
 from django.urls import reverse
+from faker import Faker
+from random import randint
 
 
 class BookViewsTestHomePage(TestCase):
@@ -24,10 +26,10 @@ class BookViewsTestHomePage(TestCase):
 
     def test_query_set(self):
         book_list = [i for i in Book.objects.all()]
-        
+
         response = self.client.get(reverse("library:home") + "?page=1")
         self.assertEqual(list(response.context["page_obj"]), book_list[:12])
-        
+
         response = self.client.get(reverse("library:home") + "?page=2")
         self.assertEqual(list(response.context["page_obj"]), book_list[12:])
 
@@ -51,4 +53,71 @@ class BookViewsTestCreateBookPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "library/book.html")
         self.assertEqual(response.context["book"], Book.objects.get(pk=1))
-        
+
+
+class BookViewTestSearch(TestCase):
+    TITLE = "Kotoninja"
+    DESCRIPTION = "Artem"
+    TAG1 = "Lox"
+    TAG2 = "Jopa"
+    TAG3 = "debil"
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        fake = Faker()
+        for i in range(25):
+            book = Book.objects.create(
+                title=fake.text(max_nb_chars=20),
+                description=fake.paragraph(),
+                price=100 * i,
+            )
+            book.add_tags(", ".join(fake.words()))
+
+        for j in range(25):
+            book = Book.objects.create(
+                title=f"{cls.TITLE}{j}",
+                description=f"{cls.DESCRIPTION}{j}",
+                price=100 * j,
+            )
+            book.add_tags(f"{cls.TAG1}{j}, {cls.TAG2}{j}, {cls.TAG3}{j}")
+
+    def test_send_search_request(self):
+        books_list: list = []
+        page: int = 1
+        exepted_page: None | int = None
+        while page <= (exepted_page if exepted_page else 1):
+            response = self.client.get(
+                reverse("library:search"), {"search": self.TITLE, "page": page}
+            )
+
+            self.assertTemplateUsed(response, "library/search.html")
+
+            if exepted_page is None:
+                exepted_page = response.context["paginator"].num_pages
+
+            for book in response.context["page_obj"]:
+                books_list.append(book)
+
+            page += 1
+
+        self.assertEqual(
+            list(Book.objects.filter(title__contains=self.TITLE)), books_list
+        )
+
+    def test_send_search_request_all_field(self):
+        books = Book.objects.filter(
+            title__contains=self.TITLE,
+            description__contains=self.DESCRIPTION,
+        )
+
+        response = self.client.get(reverse("library:search"), {"search": self.TITLE})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "library/search.html")
+        self.assertQuerySetEqual(response.context["paginator"].object_list, books)
+
+        response = self.client.get(
+            reverse("library:search"), {"search": self.DESCRIPTION}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "library/search.html")
+        self.assertQuerySetEqual(response.context["paginator"].object_list, books)

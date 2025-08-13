@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if request %}{{search}}{% else %}Search {{search}}{% endif %}{% endblock title %}
+{% block title %}{% if request %}{{search}}{% else %}Search{{search}}{% endif %}{% endblock title %}
 
 {% block content %}
 
@@ -10,7 +10,7 @@
     <h1 class="m-0">{{search}} <span class="ms-2 fs-4 text-body-secondary">{{amount}} product found</span></h1> <!--TODO add plural and singular-->
     <!-- End Title/Create book-->
 
-        <!-- Pagination -->
+    <!-- Pagination -->
     {% if page_obj.has_other_pages %}
     <div class="mt-2 d-flex justify-content-center align-content-center">
         <nav aria-label="Page navigation example">
