@@ -27,3 +27,18 @@ class CreateBookForm(forms.ModelForm):
                 attrs={"class": "form-control", "placeholder": "Price"}
             ),
         }
+
+
+class AdditionalSearchFilter(forms.Form):
+    is_rating_upper = forms.CharField(
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input my-auto ms-2",
+                "style": "cursor: pointer",
+                "role": "switch",
+                "id": "switchCheckDefault",
+                "name":"search"
+            }
+        ),
+        required=False,
+    )

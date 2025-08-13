@@ -7,7 +7,7 @@ from django.db.models import Q
 
 # Other
 from .models import Book
-from .forms import CreateBookForm
+from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
 
 
@@ -40,31 +40,36 @@ def create_book(request):
 
 
 def search(request):
-    context: dict = {}
+    context: dict = {"filter": AdditionalSearchFilter()}
 
-    if request.method == "GET":
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            search: str = form.cleaned_data["search"]
+    books = Book.objects.all()
 
-            books = Book.objects.filter(
-                Q(title__contains=search)
-                | Q(description__contains=search)
-                | Q(tags__name__in=search.split())
-            ).distinct()
+    form = SearchForm(request.GET or None)
+    filter = AdditionalSearchFilter(request.GET or None)
 
-            paginator = Paginator(books, 18)
-            page_number = request.GET.get("page")
-            page_obj = paginator.get_page(page_number)
+    if form.is_valid() and form.cleaned_data["search"]:
+        search: str = form.cleaned_data["search"]
+        context |= {"search": search}
 
-            context |= {
-                "page_obj": page_obj,
-                "amount": books.count(),
-                "search": search,
-                "search_form": SearchForm(initial={"search": search}),
-                "paginator": paginator,
-            }
-    else:
-        form = SearchForm()
+        books = books.filter(
+            Q(title__contains=search)
+            | Q(description__contains=search)
+            | Q(tags__name__in=search.split())
+        ).distinct()
 
+    if filter.is_valid():
+        if "is_rating_upper" in request.GET:
+            books = books.filter(rating__gte=4.7)
+            
+    paginator = Paginator(books, 18)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context |= {
+        "amount": books.count(),
+        "search_form": SearchForm(initial={"search":'test'}),
+        "page_obj": page_obj,
+        "paginator": paginator,
+    }
+    
     return render(request, "library/search.html", context=context)
