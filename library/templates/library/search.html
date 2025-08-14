@@ -12,6 +12,7 @@
     <!-- End Found result -->
     
     {% if page_obj %}
+
     <!-- Additional filter search -->
     <div class="bg-secondary-subtle rounded my-3">
         <div class="d-flex p-2">
@@ -31,6 +32,22 @@
                             <div class="form-check form-switch form-check-reverse d-flex user-select-none">
                                 <label class="form-check-label h5 m-0" for="switchCheckDefault">Rating is upper 4.7<i class="bi bi-star-fill text-warning"></i>?</label>
                                 {{filter_form.is_rating_upper}}
+                            </div>
+                        </div>
+                        <div class="bg-dark-subtle rounded fs-5 p-2 mt-3">
+                            <span class="h5">Price:</span>
+                            <button class="bg-transparent" type="button" style="border:none" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="bi bi-arrow-down-up"></i></button>
+                            <div class="collapse show" id="collapseExample">
+                                <div class="input-group my-2">
+                                    <span class="input-group-text">$</span>
+                                    {{filter_form.price_from}}
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{filter_form.price_to}}
+                                    <span class="input-group-text">.00</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,7 +146,7 @@
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?search={{search}}&page={{page_obj.previous_page_number}}"
+                    <a class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page={{page_obj.previous_page_number}}"
                         aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -140,7 +157,7 @@
                 {% if page_obj.number == 1 %}
                 <li class="page-item active"><a class="page-link" aria-current="page">1</a></li>
                 {% else %}
-                <li class="page-item"><a class="page-link" href="?search={{search}}&page=1" aria-current="page">1</a>
+                <li class="page-item"><a class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page=1" aria-current="page">1</a>
                 </li>
                 {% endif %}
 
@@ -149,18 +166,19 @@
                 {% if page == page_obj.number %}
                 <li class="page-item active"><a class="page-link" aria-current="page">{{page}}</a></li>
                 {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %} <li class="page-item"><a
-                        class="page-link" href="?search={{search}}&page={{page}}" aria-current="page">{{page}}</a></li>
-                    {% endif %}
+                        class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page={{page}}" aria-current="page">{{page}}</a></li>
+                {% endif %}
 
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?search={{search}}&page={{page_obj.next_page_number}}"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}{{page_obj.next_page_number}}"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
             </ul>
         </nav>
     </div>

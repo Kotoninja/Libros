@@ -78,8 +78,14 @@ def search(request):
         ).distinct()
 
     if filter_form.is_valid():
-        if "is_rating_upper" in request.GET:
+        if filter_form.cleaned_data.get("is_rating_upper"):
             books = books.filter(rating__gte=4.7)
+
+        if filter_form.cleaned_data.get("price_from"):
+            books = books.filter(price__gte=filter_form.cleaned_data["price_from"])
+
+        if filter_form.cleaned_data.get("price_to"):
+            books = books.filter(price__lte=filter_form.cleaned_data["price_to"])
 
     paginator = Paginator(books, 18)
     page_number = request.GET.get("page")
@@ -87,12 +93,8 @@ def search(request):
 
     context |= {
         "amount": books.count(),
-        "search_form": SearchForm(
-            initial={"search": search_form.cleaned_data["search"]}
-        ),
-        "filter_form": AdditionalSearchFilter(
-            initial={"is_rating_upper": request.GET.get("is_rating_upper","")}
-        ),
+        "search_form": SearchForm(initial={**search_form.cleaned_data}),
+        "filter_form": AdditionalSearchFilter(initial={**filter_form.cleaned_data}),
         "page_obj": page_obj,
         "paginator": paginator,
     }

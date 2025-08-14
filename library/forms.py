@@ -1,3 +1,4 @@
+from typing import Any
 from django import forms
 from .models import *
 
@@ -30,15 +31,20 @@ class CreateBookForm(forms.ModelForm):
 
 
 class AdditionalSearchFilter(forms.Form):
-    is_rating_upper = forms.CharField(
+    is_rating_upper = forms.BooleanField(
         widget=forms.CheckboxInput(
             attrs={
                 "class": "form-check-input my-auto ms-2",
                 "style": "cursor: pointer",
                 "role": "switch",
                 "id": "switchCheckDefault",
-                "name":"search"
+                "name": "search",
             }
         ),
         required=False,
     )
+    price_from = forms.IntegerField(
+        widget=forms.TextInput(attrs={"class": "form-control"}),required=False
+    )
+    price_to = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control"}),required=False)
+
