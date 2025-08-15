@@ -65,15 +65,15 @@ def search(request):
     books = Book.objects.all()
 
     search_form = SearchForm(request.GET or None)
-    filter_form = AdditionalSearchFilter(request.GET or None)
+    filter_form = AdditionalSearchFilter(request.GET or None) # TODO: Add error field if input data is string
 
     if search_form.is_valid() and search_form.cleaned_data["search"]:
         search: str = search_form.cleaned_data["search"]
         context |= {"search": search}
 
         books = books.filter(
-            Q(title__contains=search)
-            | Q(description__contains=search)
+            Q(title__icontains=search)
+            | Q(description__icontains=search)
             | Q(tags__name__in=search.split())
         ).distinct()
 
@@ -81,11 +81,21 @@ def search(request):
         if filter_form.cleaned_data.get("is_rating_upper"):
             books = books.filter(rating__gte=4.7)
 
-        if filter_form.cleaned_data.get("price_from"):
-            books = books.filter(price__gte=filter_form.cleaned_data["price_from"])
+        price_from: int | None = filter_form.cleaned_data.get("price_from")
+        price_to: int | None = filter_form.cleaned_data.get("price_to")
+        
+        if price_from and price_to:
+            if price_from > price_to:
+                books = books.filter(price__gte=price_from, price__lte=price_from * 1.5)
+            else:
+                books = books.filter(price__gte=price_from, price__lte=price_to)
 
-        if filter_form.cleaned_data.get("price_to"):
-            books = books.filter(price__lte=filter_form.cleaned_data["price_to"])
+        else:
+            if filter_form.cleaned_data.get("price_from"):
+                books = books.filter(price__gte=filter_form.cleaned_data["price_from"])
+
+            if filter_form.cleaned_data.get("price_to"):
+                books = books.filter(price__lte=filter_form.cleaned_data["price_to"])
 
     paginator = Paginator(books, 18)
     page_number = request.GET.get("page")

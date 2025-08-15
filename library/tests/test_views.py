@@ -2,7 +2,7 @@ from django.test import TestCase
 from library.models import Book
 from django.urls import reverse
 from faker import Faker
-from random import randint
+from random import uniform
 
 
 class BookViewsTestHomePage(TestCase):
@@ -121,3 +121,99 @@ class BookViewTestSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "library/search.html")
         self.assertQuerySetEqual(response.context["paginator"].object_list, books)
+
+
+class BookViewsTestAdditionalSearchFilter(TestCase):
+    TITLE = "Kotoninja"
+    DESCRIPTION = "Artem"
+    TAG1 = "Lox"
+    TAG2 = "Jopa"
+    TAG3 = "debil"
+    PRICE_FROM_TO = 1300
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        fake = Faker()
+        for i in range(25):
+            book = Book.objects.create(
+                title=fake.text(max_nb_chars=20),
+                description=fake.paragraph(),
+                price=100 * i,
+                rating=float(f"{uniform(1, 4.6):.1f}"),
+            )
+            book.add_tags(", ".join(fake.words()))
+
+        for j in range(25):
+            book = Book.objects.create(
+                title=f"{cls.TITLE}{j}",
+                description=f"{cls.DESCRIPTION}{j}",
+                price=100 * j,
+                rating=4.8,
+            )
+            book.add_tags(f"{cls.TAG1}{j}, {cls.TAG2}{j}, {cls.TAG3}{j}")
+
+    def test_apply_is_ratting_upper(self):
+        books = Book.objects.filter(rating__gte=4.7)
+        response = self.client.get(
+            reverse("library:search"), {"search": self.TITLE, "is_rating_upper": "on"}
+        )
+        self.assertTemplateUsed(response, "library/search.html")
+        self.assertQuerySetEqual(response.context["paginator"].object_list, books)
+
+    def test_apply_price_from(self):
+        books = Book.objects.filter(
+            price__gte=self.PRICE_FROM_TO, title__icontains=self.TITLE
+        )
+        response = self.client.get(
+            reverse("library:search"),
+            {"search": self.TITLE, "price_from": str(self.PRICE_FROM_TO)},
+        )
+        self.assertTemplateUsed(response, "library/search.html")
+        self.assertQuerySetEqual(response.context["paginator"].object_list, books)
+
+    def test_apply_price_to(self):
+        books = Book.objects.filter(
+            price__lte=self.PRICE_FROM_TO, title__icontains=self.TITLE
+        )
+        response = self.client.get(
+            reverse("library:search"),
+            {"search": self.TITLE, "price_to": str(self.PRICE_FROM_TO)},
+        )
+        self.assertTemplateUsed(response, "library/search.html")
+        self.assertQuerySetEqual(response.context["paginator"].object_list, books)
+
+    def test_price_from_greater_price_to(self):
+        response = self.client.get(
+            reverse("library:search"),
+            {
+                "search": self.TITLE,
+                "price_from": str(self.PRICE_FROM_TO + 10),
+                "price_to": str(self.PRICE_FROM_TO - 10),
+            },
+        )
+        self.assertTrue(response.context["paginator"].object_list)
+
+    def test_additional_filter_with_pagination(self):
+        books = list(
+            Book.objects.filter(
+                title__icontains=self.TITLE,
+                rating__gte=4.7,
+                price__gte=100,
+                price__lte=2000,
+            )
+        )
+        response = self.client.get(
+            reverse("library:search"),
+            {
+                "search": self.TITLE,
+                "is_rating_upper": "on",
+                "price_from": str(100),
+                "price_to": str(2000),
+            },
+        )
+        p = response.context["paginator"]
+
+        total_pagination_book: list = []
+        for i in range(1, p.num_pages + 1):
+            total_pagination_book.extend(p.page(i).object_list)
+        self.assertEqual(total_pagination_book, books)

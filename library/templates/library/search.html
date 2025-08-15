@@ -7,19 +7,16 @@
 
 <section class="mt-4">
     <!-- Found result -->
-    <h1 class="m-0">{{search}} <span class="ms-2 fs-4 text-body-secondary">{{amount}} product found</span></h1>
-    <!--TODO add plural and singular-->
+    <h1 class="m-0">{{search}}<span class="ms-2 fs-4 text-body-secondary">{{amount}} product{{amount|pluralize:'s'}} found</span></h1>
     <!-- End Found result -->
     
-    {% if page_obj %}
-
     <!-- Additional filter search -->
     <div class="bg-secondary-subtle rounded my-3">
         <div class="d-flex p-2">
             <button class="btn btn-primary fs-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterScrolling" aria-controls="filterScrolling"><i class="bi bi-sliders"></i> Filters</button>
         </div>
-
-        <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filterScrolling" aria-labelledby="filterScrollingLabel">
+        
+        <div class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filterScrolling" aria-labelledby="filterScrollingLabel">
             <form action="?search='{{search}}'">
                 <input type="hidden" name="search" value="{{ request.GET.search }}">
                 <div class="container pt-2 ">
@@ -61,6 +58,7 @@
     <!-- End Additional filter search -->
 
     <!-- All Books Field -->
+    {% if page_obj %}
     <div class="bg-secondary-subtle mt-3 p-3 rounded">
         <div class="row g-1 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-2 row-cols-2">
             <!-- One Book Field -->
@@ -146,7 +144,7 @@
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page={{page_obj.previous_page_number}}"
+                    <a class="page-link" href="{%querystring page=page_obj.previous_page_number%}"
                         aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -157,7 +155,7 @@
                 {% if page_obj.number == 1 %}
                 <li class="page-item active"><a class="page-link" aria-current="page">1</a></li>
                 {% else %}
-                <li class="page-item"><a class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page=1" aria-current="page">1</a>
+                <li class="page-item"><a class="page-link" href="{%querystring page=1%}" aria-current="page">1</a>
                 </li>
                 {% endif %}
 
@@ -166,14 +164,13 @@
                 {% if page == page_obj.number %}
                 <li class="page-item active"><a class="page-link" aria-current="page">{{page}}</a></li>
                 {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %} <li class="page-item"><a
-                        class="page-link" href="?{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}page={{page}}" aria-current="page">{{page}}</a></li>
+                        class="page-link" href="{%querystring page=page%}" aria-current="page">{{page}}</a></li>
                 {% endif %}
-
                 {% endfor %}
 
                 {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{% for param, value in request.GET.items  %}{% if param != 'page' %}{{param}}={{value}}&{% endif %}{% endfor %}{{page_obj.next_page_number}}"
+                    <a class="page-link" href="{%querystring page=page_obj.next_page_number%}"
                         aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
