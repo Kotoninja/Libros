@@ -10,3 +10,16 @@
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
+
+.ktn-bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.ktn-bg-danger-subtle-90 {
+    background: rgb(251, 233, 235);
+}

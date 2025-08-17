@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if request %}Search: {{search}}{% else %}Search{{search}}{% endif %}{% endblock title %}
+
+{% block content %}
+
+<section class="mt-4">
+    <!-- Found result -->
+    <h1 class="m-0">{{search}}<span class="ms-2 fs-4 text-body-secondary">{{amount}} product{{amount|pluralize:'s'}} found</span></h1>
+    <!-- End Found result -->
+     
+    <!-- Error Alert -->
+    {% if filter_form.errors %}
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay='6000'>
+            <div class="toast-header bg-danger-subtle">
+            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+            <strong class="me-auto ms-2">Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body ktn-bg-danger-subtle-90 rounded-bottom">
+                {% with filter_form.errors.as_data as erdict %}
+                    <ul class="list-group list-group-numbered">
+                        {% for error_field, messages in erdict.items %}
+                        <li class="list-group-item">{{error_field}}:
+                            <ul>
+                                {% for message in messages.0 %}
+                                <li>{{message}}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor%}
+                    </ul>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <script defer src="{% static 'library/js/search_toast_error.js' %}"></script>
+    {% endif %}
+    <!-- End Error Alert -->
+
+    <!-- Additional filter search -->
+    <div class="bg-secondary-subtle rounded my-3">
+        <div class="d-flex p-2">
+            <button class="btn btn-primary fs-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterScrolling" aria-controls="filterScrolling"><i class="bi bi-sliders"></i> Filters</button>
+        </div>
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filterScrolling" aria-labelledby="filterScrollingLabel">
+            <form action="?search='{{search}}'">
+                <input type="hidden" name="search" value="{{ request.GET.search }}">
+                <div class="container pt-2 ">
+                    <div class="offcanvas-header bg-dark-subtle rounded">
+                        <h5 class="offcanvas-title h1" id="filterScrollingLabel">Filter</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body p-0 mt-3">
+                        <div class="bg-dark-subtle rounded fs-5 p-2">
+                            <div class="form-check form-switch form-check-reverse d-flex user-select-none">
+                                <label class="form-check-label h5 m-0" for="switchCheckDefault">Rating is upper 4.7<i class="bi bi-star-fill text-warning"></i>?</label>
+                                {{filter_form.is_rating_upper}}
+                            </div>
+                        </div>
+                        <div class="bg-dark-subtle rounded fs-5 p-2 mt-3">
+                            <span class="h5">Price:</span>
+                            <button class="bg-transparent" type="button" style="border:none" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="bi bi-arrow-down-up"></i></button>
+                            <div class="collapse show" id="collapseExample">
+                                <div class="input-group my-2">
+                                    <span class="input-group-text">$</span>
+                                    {{filter_form.price_from}}
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{filter_form.price_to}}
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ktn-bottom d-flex justify-content-center w-100 mb-1">
+                    <button type="submit" class="btn btn-success w-80 h-3 p-0">Success</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Additional filter search -->
+
+    <!-- All Books Field -->
+    {% if page_obj %}
+    <div class="bg-secondary-subtle mt-3 p-3 rounded">
+        <div class="row g-1 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-2 row-cols-2">
+            <!-- One Book Field -->
+            {% for book in page_obj %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Image book and info button -->
+                        <div class="text-center">
+                            <a href="{{book.get_absolute_url}}">
+                                <img src="{{book.image.url}}" alt="{{book.title}}"
+                                    class="mb-3 position-relative img-thumbnail" style="height: 280px">
+                                {% comment %} <button
+                                    class="position-absolute start-0 top-0 bg-white border rounded-circle"
+                                    data-bs-toggle="modal" data-bs-target="#info"><i
+                                        class="bi bi-info-circle-fill fs-4"></i></button> {% endcomment %}
+                            </a>
+                            <!-- Info -->
+                            {% comment %} <div class="modal fade" id="info" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> {% endcomment %}
+                            <!-- End Info -->
+                        </div>
+                        <!-- End Image book and info button -->
+
+                        <!-- Book Title -->
+                        <a class="card-title h6 link-underline link-underline-opacity-0 ktn-text-truncate"
+                            href="{{book.get_absolute_url}}">
+                            {{book.title}}
+                        </a>
+                        <!-- End Book Title -->
+
+                        <!-- Author -->
+                        <p class="card-text mb-1 text-muted">{{book.author}}</p>
+                        <!-- End Author -->
+
+                        <!-- Grade -->
+                        <div class="text-warning my-2">
+                            <i class="bi bi-star-fill"></i>
+                            <span class="text-muted small">{{book.rating}} ({{book.feedbacks}})</span>
+                        </div>
+                        <!-- End Grade -->
+
+                        <!-- Price -->
+                        <span class="fs-5">{{book.price}}</span>
+                        <!-- End Price-->
+
+                        <!-- Buy Button -->
+                        <div>
+                            <a href="#" class="btn btn-primary w-100"><i class="bi bi-cart3"></i>Buy</a>
+                        </div>
+                        <!-- End Buy Button -->
+                    </div>
+                </div>
+                <!-- End One Book Field -->
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- End All Books Field -->
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-2 d-flex justify-content-center align-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{%querystring page=page_obj.previous_page_number%}"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+
+                {% if page_obj.number == 1 %}
+                <li class="page-item active"><a class="page-link" aria-current="page">1</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="{%querystring page=1%}" aria-current="page">1</a>
+                </li>
+                {% endif %}
+
+
+                {% for page in page_obj.paginator.page_range|slice:"1:" %}
+                {% if page == page_obj.number %}
+                <li class="page-item active"><a class="page-link" aria-current="page">{{page}}</a></li>
+                {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %} <li class="page-item"><a
+                        class="page-link" href="{%querystring page=page%}" aria-current="page">{{page}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{%querystring page=page_obj.next_page_number%}"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    <!-- End Pagination-->
+
+    <!-- No results -->
+    {% else %}
+    <p class="fs-1 text-danger-emphasis"> No results contains "{{search}}"</p>
+    {% endif %}
+    <!-- End No results -->
+
+</section>
+{% endblock content %}
