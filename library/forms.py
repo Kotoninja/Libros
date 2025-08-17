@@ -44,7 +44,7 @@ class AdditionalSearchFilter(forms.Form):
         required=False,
     )
     price_from = forms.IntegerField(
-        widget=forms.NumberInput(attrs={"class": "form-control"}),required=False
+        widget=forms.TextInput(attrs={"class": "form-control"}),required=False
     )
-    price_to = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "form-control"}),required=False)
+    price_to = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control"}),required=False)
 

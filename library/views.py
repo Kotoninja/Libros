@@ -65,7 +65,7 @@ def search(request):
     books = Book.objects.all()
 
     search_form = SearchForm(request.GET or None)
-    filter_form = AdditionalSearchFilter(request.GET or None) # TODO: Add error field if input data is string
+    filter_form = AdditionalSearchFilter(request.GET or None)
 
     if search_form.is_valid() and search_form.cleaned_data["search"]:
         search: str = search_form.cleaned_data["search"]
@@ -103,8 +103,8 @@ def search(request):
 
     context |= {
         "amount": books.count(),
-        "search_form": SearchForm(initial={**search_form.cleaned_data}),
-        "filter_form": AdditionalSearchFilter(initial={**filter_form.cleaned_data}),
+        "search_form": search_form,
+        "filter_form": filter_form,
         "page_obj": page_obj,
         "paginator": paginator,
     }

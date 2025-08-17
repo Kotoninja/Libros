@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if request %}{{search}}{% else %}Search{{search}}{% endif %}{% endblock title %}
+{% block title %}{% if request %}Search: {{search}}{% else %}Search{{search}}{% endif %}{% endblock title %}
 
 {% block content %}
 
@@ -9,14 +9,43 @@
     <!-- Found result -->
     <h1 class="m-0">{{search}}<span class="ms-2 fs-4 text-body-secondary">{{amount}} product{{amount|pluralize:'s'}} found</span></h1>
     <!-- End Found result -->
-    
+     
+    <!-- Error Alert -->
+    {% if filter_form.errors %}
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay='6000'>
+            <div class="toast-header bg-danger-subtle">
+            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+            <strong class="me-auto ms-2">Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body ktn-bg-danger-subtle-90 rounded-bottom">
+                {% with filter_form.errors.as_data as erdict %}
+                    <ul class="list-group list-group-numbered">
+                        {% for error_field, messages in erdict.items %}
+                        <li class="list-group-item">{{error_field}}:
+                            <ul>
+                                {% for message in messages.0 %}
+                                <li>{{message}}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor%}
+                    </ul>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <script defer src="{% static 'library/js/search_toast_error.js' %}"></script>
+    {% endif %}
+    <!-- End Error Alert -->
+
     <!-- Additional filter search -->
     <div class="bg-secondary-subtle rounded my-3">
         <div class="d-flex p-2">
             <button class="btn btn-primary fs-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterScrolling" aria-controls="filterScrolling"><i class="bi bi-sliders"></i> Filters</button>
         </div>
-        
-        <div class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filterScrolling" aria-labelledby="filterScrollingLabel">
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="filterScrolling" aria-labelledby="filterScrollingLabel">
             <form action="?search='{{search}}'">
                 <input type="hidden" name="search" value="{{ request.GET.search }}">
                 <div class="container pt-2 ">
