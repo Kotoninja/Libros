@@ -83,7 +83,7 @@ def search(request):
 
         price_from: int | None = filter_form.cleaned_data.get("price_from")
         price_to: int | None = filter_form.cleaned_data.get("price_to")
-        
+
         if price_from and price_to:
             if price_from > price_to:
                 books = books.filter(price__gte=price_from, price__lte=price_from * 1.5)

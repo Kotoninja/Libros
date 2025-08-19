@@ -30,7 +30,19 @@
         "name": "tests",
         "icon": "checklist",
         "color": "terminal.ansiCyan"
-      }
+      },
+      [
+        {
+          "name": "Docker",
+          "icon": "symbol-function",
+          "color": "terminal.ansiBlue"
+        },
+        {
+          "name": "Docker",
+          "icon": "symbol-function",
+          "color": "terminal.ansiBlue"
+        }
+      ]
     ]
   }
 }
