@@ -10,6 +10,10 @@ from .models import Book
 from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
 
+"""
+Errors Alert: To show form errors to the user (if you are using Django Forms (forms.Form / forms.ModelForm)) add `your_form_name.errors` to the "errors" key in the context passed to rendering
+"""
+
 
 def home(request):
     paginator = Paginator(Book.objects.all(), 12)
@@ -56,7 +60,11 @@ def create_book(request):
     else:
         form = CreateBookForm()
 
-    return render(request, "library/create_book.html", context={"form": form})
+    return render(
+        request,
+        "library/create_book.html",
+        context={"form": form, "errors": form.errors},
+    )
 
 
 def search(request):
@@ -97,7 +105,7 @@ def search(request):
             if filter_form.cleaned_data.get("price_to"):
                 books = books.filter(price__lte=filter_form.cleaned_data["price_to"])
 
-    paginator = Paginator(books, 18)
+    paginator = Paginator(books, 30)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
@@ -107,6 +115,7 @@ def search(request):
         "filter_form": filter_form,
         "page_obj": page_obj,
         "paginator": paginator,
+        "errors": filter_form.errors,
     }
 
     return render(request, "library/search.html", context=context)
