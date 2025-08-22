@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 
+
 def login_user(request):
     context = {}
     if request.method == "POST":
@@ -30,7 +31,6 @@ def login_user(request):
         form = LoginForm()
 
     context |= {"form": form}
-    print(form)
     return render(request, "user/login.html", context=context)
 
 
@@ -44,7 +44,7 @@ def registration(request):
                     "auth_errors": "Passwords did not occur. Please enter the same passwords in both fields."
                 }
             elif User.objects.filter(username=form.cleaned_data["username"]).exists():
-                context |= {"auth_errors": "This Email already exist"}
+                context |= {"auth_errors": "This Username already exist"}
             elif User.objects.filter(email=form.cleaned_data["email"]).exists():
                 context |= {"auth_errors": "This Email already exist"}
             else:
@@ -60,6 +60,7 @@ def registration(request):
         form = RegistrationForm()
     context |= {"form": form}
     return render(request, "user/registration.html", context=context)
+
 
 @login_required
 def profile(request):
