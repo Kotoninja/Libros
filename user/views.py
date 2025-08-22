@@ -4,7 +4,8 @@ from .forms import LoginForm, RegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.sessions.models import Session
 
 def login_user(request):
     context = {}
@@ -29,7 +30,7 @@ def login_user(request):
         form = LoginForm()
 
     context |= {"form": form}
-
+    print(form)
     return render(request, "user/login.html", context=context)
 
 
@@ -43,9 +44,9 @@ def registration(request):
                     "auth_errors": "Passwords did not occur. Please enter the same passwords in both fields."
                 }
             elif User.objects.filter(username=form.cleaned_data["username"]).exists():
-                context |= {"auth_errors": "This username already exist"}
+                context |= {"auth_errors": "This Email already exist"}
             elif User.objects.filter(email=form.cleaned_data["email"]).exists():
-                context |= {"auth_errors": "This username already exist"}
+                context |= {"auth_errors": "This Email already exist"}
             else:
                 User.objects.create_user(
                     username=form.cleaned_data["username"],

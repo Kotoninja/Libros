@@ -15,10 +15,19 @@
               {{auth_errors}}
             </div>
             {% endif %}
+            
             <form action="" method="post">
-              {% csrf_token %}
               <div class="row gy-2 overflow-hidden">
-                <div class="col-12">
+                {% csrf_token %}
+                {% for field in form|slice:":1" %}
+                  <div class="col-12">
+                    <div class="form-floating mb-3 rounded-2">
+                      {{field}}
+                      <label for="password" class="form-label">{{field.label}}</label>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% comment %} <div class="col-12">
                   <div class="form-floating mb-3 rounded-2">
                     {{form.username}}
                     <label for="username" class="form-label">Username</label>
@@ -29,7 +38,7 @@
                     {{form.password}}
                     <label for="password" class="form-label">Password</label>
                   </div>
-                </div>
+                </div> {% endcomment %}
                 <div class="col-12">
                   <div class="d-flex gap-2 justify-content-between">
                     <div class="form-check">

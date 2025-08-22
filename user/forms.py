@@ -24,7 +24,8 @@ class RegistrationForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "Username"}
-        )
+        ),
+        label="username",
     )
     email = forms.EmailField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"})
