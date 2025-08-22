@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     + [
         # Your apps
         "library.apps.LibraryConfig",
+        "user.apps.UserConfig"
     ]
     + [
         # Third party packages

@@ -1,0 +1,45 @@
+:root {
+  --gradient-shadow: linear-gradient(
+    45deg,
+    #dedddd,
+    #aeaeae,
+    #8f8f8f,
+    #616161,
+    #000000,
+    #dedddd,
+    #aeaeae,
+    #8f8f8f,
+    #616161,
+    #000000
+  );
+}
+.ktn-shadow:before,
+.ktn-shadow:after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background: var(--gradient-shadow);
+  background-size: 400%;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: -1;
+  animation: animate 20s linear infinite;
+  border-radius: 0.375rem;
+}
+
+.ktn-shadow:after {
+  filter: blur(20px);
+}
+
+@keyframes animate {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 300% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
