@@ -17,6 +17,7 @@ class LoginForm(forms.Form):
             attrs={"class": "form-check-input", "placeholder": "Remember me"}
         ),
         required=False,
+        disabled=True
     )
 
 
