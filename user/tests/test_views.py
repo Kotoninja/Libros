@@ -72,13 +72,15 @@ class RegistrationPageTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         User.objects.create_user(
-            username=cls.USERNAME_SECOND, password=cls.PASSWORD_SECOND, email=cls.EMAIL_SECOND
+            username=cls.USERNAME_SECOND,
+            password=cls.PASSWORD_SECOND,
+            email=cls.EMAIL_SECOND,
         )
 
     def test_status_code_and_template_registration_page(self):
         response = self.client.get(reverse("user:registration"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,"user/registration.html")
+        self.assertTemplateUsed(response, "user/registration.html")
 
     def test_send_full_form(self):
         users_before = User.objects.count()
@@ -137,6 +139,7 @@ class RegistrationPageTest(TestCase):
         self.assertContains(response, "This Email already exist")
         self.assertEqual(response.status_code, 200)
 
+
 class ProfilePageTest(TestCase):
     USERNAME = "Bob"
     PASSWORD = "Bobqwerty"
@@ -144,16 +147,40 @@ class ProfilePageTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create_user(username=cls.USERNAME,password=cls.PASSWORD,email=cls.EMAIL)
-    
+        User.objects.create_user(
+            username=cls.USERNAME, password=cls.PASSWORD, email=cls.EMAIL
+        )
+
     def test_for_non_auth_user(self):
         response = self.client.get(reverse("user:profile"))
-        self.assertEqual(response.status_code,302)
-        self.assertRedirects(response,f"{reverse("user:login")}?next={reverse("user:profile")}")
-    
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, f"{reverse('user:login')}?next={reverse('user:profile')}"
+        )
+
     def test_for_auth_user(self):
-        self.client.login(username = self.USERNAME,password = self.PASSWORD)
+        self.client.login(username=self.USERNAME, password=self.PASSWORD)
         response = self.client.get(reverse("user:profile"))
-        self.assertEqual(response.status_code,200)
-        self.assertTemplateUsed(response,"user/profile.html")
-        self.assertContains(response,str(reverse("user:logout")))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "user/profile.html")
+        self.assertContains(response, str(reverse("user:logout")))
+
+
+class LogoutTest(TestCase):
+    USERNAME = "Bob"
+    PASSWORD = "Bobqwerty"
+    EMAIL = "Bob@Bob.com"
+
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user(
+            username=cls.USERNAME, password=cls.PASSWORD, email=cls.EMAIL
+        )
+
+    def test_logout(self):
+        self.client.login(username=self.USERNAME, password=self.PASSWORD)
+        response = self.client.post(reverse("user:logout"))
+        self.assertEqual(response.status_code,302)
+        self.assertRedirects(response,reverse("library:home"))
+        response = self.client.get(reverse("library:home"))
+        self.assertEqual(str(response.context["user"]),"AnonymousUser")

@@ -64,7 +64,6 @@ def registration(request):
 
 @login_required
 def profile(request):
-    # return HttpResponse(request.user.username)
     return render(request, "user/profile.html")
 
 
