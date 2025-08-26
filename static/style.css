@@ -23,3 +23,7 @@
 .ktn-bg-danger-subtle-90 {
     background: rgb(251, 233, 235);
 }
+
+.ktn-link-body-primary:hover::after {
+    color: rgb(0, 150, 255) !important;
+}

@@ -1,0 +1,6 @@
+{% if field.errors %}
+    <div class="alert alert-danger p-1 my-1" role="alert">
+        <i class="bi bi-exclamation-triangle text-danger me-2 ms-1"></i>
+        <span>{{field.html_name|title}} - {{field.errors.0}}</span>
+    </div>
+{% endif %}

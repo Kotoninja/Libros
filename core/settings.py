@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import environ
-# import psycopg
+from django.urls import reverse_lazy
 
 env = environ.Env(
     # set casting, default value
@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     + [
         # Your apps
         "library.apps.LibraryConfig",
+        "user.apps.UserConfig"
     ]
     + [
         # Third party packages
@@ -157,3 +158,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Here
 MEDIA_URL = "/media/"
+
+LOGIN_URL = reverse_lazy("user:login")
+LOGIN_REDIRECT_URL = reverse_lazy("user:registration")
+LOGOUT_URL = reverse_lazy("user:logout")
