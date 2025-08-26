@@ -2,7 +2,7 @@
 {% block title %}Profile{% endblock title %}
 
 {% block content %}
-<span>{{request.user.username}}</span>
+<h1>{{request.user.username}}</h1>
 
 
 <form action="{% url 'user:logout' %}" method="post">

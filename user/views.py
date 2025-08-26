@@ -69,4 +69,9 @@ def profile(request):
 
 def logout_user(request):
     logout(request)
-    return redirect("library:home")
+    return redirect("user:login")
+
+@login_required
+def settings_user(request):
+    context = {}
+    return render(request,"user/settings.html",context=context)

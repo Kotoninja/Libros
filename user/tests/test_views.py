@@ -181,6 +181,6 @@ class LogoutTest(TestCase):
         self.client.login(username=self.USERNAME, password=self.PASSWORD)
         response = self.client.post(reverse("user:logout"))
         self.assertEqual(response.status_code,302)
-        self.assertRedirects(response,reverse("library:home"))
+        self.assertRedirects(response,reverse("user:login"))
         response = self.client.get(reverse("library:home"))
         self.assertEqual(str(response.context["user"]),"AnonymousUser")

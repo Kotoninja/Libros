@@ -45,10 +45,31 @@
                 </button>
                 <div class="collapse navbar-collapse col-lg-4 col-md-3" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto">
-                        <li class="nav-item">
-                            <div>
-                                <a class="nav-link active p-0 d-flex flex-column fs-6 text-white" aria-current="page" href="{% url 'user:profile' %}"><i
-                                        class="bi bi-person-fill fs-4 mx-auto d-none d-lg-block"></i>User</a>
+                        <li class="nav-item col-1 col-lg-12">
+                            <div class="dropdown text-center">
+                                <a href="{% url 'user:profile' %}" class="d-block text-decoration-none dropdown-toggle ktn-link-body-primary d-flex justify-content-center align-items-center text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="d-flex flex-column justify-content-center align-items-center">
+                                        <i class="bi bi-person-circle fs-5 d-lg-block d-none"></i>
+                                        <i class="bi bi-person-circle fs-1 d-lg-none d-block"></i>
+                                        {% if user.is_authenticated %}
+                                        <span class="d-lg-block d-none">{{request.user.username}}</span>
+                                        {% else %}
+                                        <span class="d-lg-block d-none">Account</span>                                       
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                {% if user.is_authenticated %}
+                                <ul class="dropdown-menu text-small" style="">
+                                    <li><a class="dropdown-item" href="{% url 'user:profile' %}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'user:settings' %}">Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><form action="{% url 'user:logout' %}" method="post" class="dropdown-item">{% csrf_token %}<button class="btn p-0 border-none">Logout</button></form></li>
+                                </ul>
+                                {% else %}
+                                <ul class="dropdown-menu text-small" style="">
+                                    <li><a class="dropdown-item" href="{% url 'user:login' %}">Login</a></li>
+                                </ul>
+                                {% endif %}
                             </div>
                         </li>
                     </ul>
