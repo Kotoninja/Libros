@@ -2,32 +2,34 @@
 {% load errors_tags %}
 {% if messages %}
 {% for message in messages %}
+    {% if message.tags == "success" %}
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay='6000'>
+            <div class="toast-header bg-success-subtle">
+            <i class="bi bi-clipboard-check-fill text-success"></i>
+            {% comment %} <i class="bi bi-exclamation-triangle-fill text-danger"></i> {% endcomment %}
+            <strong class="me-auto ms-2">{{message.tags|capfirst}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body rounded-bottom">
+                {{message}}
+            </div>
+        </div>
+    </div>
+    {% elif message.tags == "error" %}
     <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay='6000'>
             <div class="toast-header bg-danger-subtle">
             <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-            <strong class="me-auto ms-2">Error</strong>
+            <strong class="me-auto ms-2">{{message.tags|capfirst}}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body ktn-bg-danger-subtle-90 rounded-bottom">
                 {{message}}
-                
-                {% comment %} {% with errors.as_data as erdict %}
-                    <ul class="list-group list-group-numbered">
-                        {% for error_field, messages in erdict.items %}
-                        <li class="list-group-item">{{error_field|replace:"_| "}}:
-                            <ul class="list-group list-group-flush">
-                                {% for message in messages.0 %}
-                                <li class="list-group-item py-0">{{message}}</li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        {% endfor%}
-                    </ul>
-                {% endwith %} {% endcomment %}
             </div>
         </div>
     </div>
+    {% endif %}
     <script defer src="{% static 'errors_alert_triger.js' %}"></script>
 {% endfor %}
 {% endif %}
