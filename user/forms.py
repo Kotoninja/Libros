@@ -17,7 +17,7 @@ class LoginForm(forms.Form):
             attrs={"class": "form-check-input", "placeholder": "Remember me"}
         ),
         required=False,
-        disabled=True
+        disabled=True,
     )
 
 
@@ -39,4 +39,10 @@ class RegistrationForm(forms.Form):
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "placeholder": "Repeat password"}
         )
+    )
+
+
+class ResetPasswordEmail(forms.Form):
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"})
     )

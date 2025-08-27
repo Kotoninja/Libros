@@ -4,15 +4,20 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib import messages
 
 # Other
 from .models import Book
 from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
 
-"""
-Errors Alert: To show form errors to the user (if you are using Django Forms (forms.Form / forms.ModelForm)) add `your_form_name.errors` to the "errors" key in the context passed to rendering
-"""
+
+def get_errors_from_form(request, form):
+    for error_field, error_message in form.errors.as_data().items():
+        messages.error(
+            request,
+            f"{error_field.capitalize().replace('_', ' ')} : {error_message[0].message}",
+        )
 
 
 def home(request):
@@ -115,7 +120,7 @@ def search(request):
         "filter_form": filter_form,
         "page_obj": page_obj,
         "paginator": paginator,
-        "errors": filter_form.errors,
+        "errors": get_errors_from_form(request, form=filter_form),
     }
 
     return render(request, "library/search.html", context=context)
