@@ -53,7 +53,7 @@ INSTALLED_APPS = (
     + [
         # Your apps
         "library.apps.LibraryConfig",
-        "user.apps.UserConfig"
+        "user.apps.UserConfig",
     ]
     + [
         # Third party packages
@@ -101,7 +101,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": env("POSTGRES_NAME"),
         "USER": env("POSTGRES_USER"),
-        "PASSWORD":env("POSTGRES_PASSWORD"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": env("POSTGRES_HOST"),
         "PORT": env("POSTGRES_PORT"),
     }
