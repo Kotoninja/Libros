@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, ResetPasswordEmail
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -71,7 +71,20 @@ def logout_user(request):
     logout(request)
     return redirect("user:login")
 
+
 @login_required
 def settings_user(request):
     context = {}
-    return render(request,"user/settings.html",context=context)
+    return render(request, "user/settings.html", context=context)
+
+
+def reset_password_user(request):
+    context = {}
+
+    if request.method == "POST":
+        form = ResetPasswordEmail(request.POST)
+    else:
+        form = ResetPasswordEmail()
+
+    context |= {"form": form}
+    return render(request, "user/reset_password_user.html", context=context)
