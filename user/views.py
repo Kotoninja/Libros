@@ -85,10 +85,6 @@ def registration(request):
     return render(request, "user/registration.html", context=context)
 
 
-def url_test(request):
-    send_mail(subject="Test", message="Mail Django", from_email="librosshop@yandex.ru",recipient_list=["saer3rfsfdf@yandex.ru"],fail_silently=False)
-    return HttpResponse("Message Send")
-
 @login_required
 def profile(request):
     return render(request, "user/profile.html")
@@ -115,4 +111,3 @@ def reset_password_user(request):
 
     context |= {"form": form}
     return render(request, "user/reset_password_user.html", context=context)
-
