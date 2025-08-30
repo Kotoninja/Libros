@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
+from django.urls import reverse
 
 
 from .forms import LoginForm, RegistrationForm, ResetPasswordEmail
@@ -41,8 +42,25 @@ def activate_email(request, user, to_email):
         )
 
 def activate(request,uidb64,token):
-    return HttpResponse("Activate") # TODO Finished activate Email
+    user = User.objects.get(pk = force_str(urlsafe_base64_decode(uidb64)))
 
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        return redirect(reverse("user:profile"))
+    else:
+        messages.error(request, 'Activation link is invalid!')
+    
+    return redirect(reverse("library:home"))
+    
 def get_errors_from_form(request, form):
     for error_field, error_message in form.errors.as_data().items():
         messages.error(
