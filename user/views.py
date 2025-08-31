@@ -155,7 +155,7 @@ def activate(request, uidb64, token):
 
     return redirect(reverse("library:home"))
 
-
+# TODO Add rate limit
 def resend_email(request):
     context = {}
 
