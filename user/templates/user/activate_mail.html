@@ -1,0 +1,25 @@
+{% extends "base_auth_user.html" %}
+
+{% block title %}Activate Email{% endblock title %}
+
+{% block content %}
+{% include "messages.html" %}
+<div class="container d-flex justify-content-center align-items-center">
+    <div>
+        <h1>
+            Activate Email
+            <i class="bi bi-envelope-at-fill fs-1"></i>
+        </h1>
+        <span>
+            Please go to you email <b>{{to_email}}</b> inbox and click on \
+                received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder."
+        </span>
+        <hr>
+        <h2>Didn't receive the letter? Send again</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

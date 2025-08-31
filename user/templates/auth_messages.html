@@ -1,7 +1,11 @@
 {% for message in messages %}
-    {% if message.tags == "auth_error error" %}
+    {% if message.tags == "auth_message error" %}
         <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle text-danger me-2 ms-1"></i>{{message}}
+        </div>
+    {% elif message.tags == "auth_message success" %}
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-exclamation-triangle text-success me-2 ms-1"></i>{{message}}
         </div>
     {% endif %}
 {% endfor %}
