@@ -185,9 +185,27 @@ def logout_user(request):
 
 
 @login_required
-def settings_user(request):
+def settings_profile_user(request):
     context = {}
-    return render(request, "user/settings.html", context=context)
+    return render(request, "user/settings_profile.html", context=context)
+
+
+@login_required
+def settings_security_user(request):
+    context = {}
+    return render(request, "user/settings_security.html", context=context)
+
+
+@login_required
+def settings_notifications_user(request):
+    context = {}
+    return render(request, "user/settings_notifications.html", context=context)
+
+
+@login_required
+def settings_billing_user(request):
+    context = {}
+    return render(request, "user/settings_billing.html", context=context)
 
 
 def reset_password_user(request):

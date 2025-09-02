@@ -61,7 +61,7 @@
                                 {% if user.is_authenticated %}
                                 <ul class="dropdown-menu text-small" style="">
                                     <li><a class="dropdown-item" href="{% url 'user:profile' %}">Profile</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'user:settings' %}">Settings</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'user:settings_profile' %}">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><form action="{% url 'user:logout' %}" method="post" class="dropdown-item">{% csrf_token %}<button class="btn p-0 border-none">Logout</button></form></li>
                                 </ul>
