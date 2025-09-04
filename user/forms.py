@@ -90,3 +90,20 @@ class SettingsProfile(forms.Form):
         ),
         required=False,
     )
+
+class ChangePassword(forms.Form):
+    current_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Enter current password"}
+        )
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Enter new password"}
+        )
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Confirm new password"}
+        )
+    )

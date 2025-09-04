@@ -14,7 +14,13 @@ from django.core.mail import EmailMessage
 from django.urls import reverse
 
 
-from .forms import LoginForm, RegistrationForm, ResetPasswordEmail, SettingsProfile
+from .forms import (
+    LoginForm,
+    RegistrationForm,
+    ResetPasswordEmail,
+    SettingsProfile,
+    ChangePassword,
+)
 from .tokens import account_activation_token
 
 
@@ -43,7 +49,11 @@ def login_user(request):
                 login(request, user)
                 return redirect("library:home")
 
-            elif User.objects.filter(username=form.cleaned_data["username"]).exists():
+            elif User.objects.filter(
+                username=form.cleaned_data["username"]
+            ).exists() and User.objects.get(
+                username=form.cleaned_data["username"]
+            ).check_password(form.cleaned_data["password"]):
                 user = User.objects.get(username=form.cleaned_data["username"])
                 if (
                     user.check_password(form.cleaned_data["password"])
@@ -189,7 +199,7 @@ def logout_user(request):
 @login_required
 def settings_profile_user(
     request,
-):  # TODO finished profile settings (save settings / upload image)
+):
     if request.method == "POST":
         form = SettingsProfile(request.POST, request.FILES)
         if form.is_valid():
@@ -220,7 +230,7 @@ def settings_profile_user(
             user.save()
             return redirect(reverse("user:settings_profile"))
         else:
-            messages.error("Oops... Something wrong")
+            messages.error(request, "Oops... Something wrong")
 
     context = {
         "form": SettingsProfile(
@@ -241,7 +251,29 @@ def settings_profile_user(
 # TODO add reset password through email
 @login_required
 def settings_security_user(request):
-    context = {}
+    if request.method == "POST":
+        change_password_form = ChangePassword(request.POST)
+
+        if change_password_form.is_valid():
+            current_password = change_password_form.cleaned_data["current_password"]
+            new_password = change_password_form.cleaned_data["new_password"]
+            confirm_password = change_password_form.cleaned_data["confirm_password"]
+
+            if User.objects.filter(pk=request.user.pk).exists(): # TODO add check if currect password is new password
+                user = User.objects.get(pk=request.user.pk)
+                if user.check_password(current_password):
+                    if new_password == confirm_password:
+                        user.set_password(new_password)
+                        user.save()
+                        messages.success(request, "Password successfully changed") # TODO Rework next in url
+                        return redirect(f"{reverse("user:login")}?next={request.path}")
+                    else:
+                        messages.error(request, "Passwords do not match")
+                else:
+                    messages.error(request, "Incorrect current password")
+        else:
+            messages.error(request, "Oops... Something wrong")
+    context = {"change_password_form": ChangePassword()}
     return render(request, "user/settings_security.html", context=context)
 
 

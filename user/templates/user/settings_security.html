@@ -10,23 +10,30 @@
         <div class="card mb-4">
             <div class="card-header">Change Password</div>
             <div class="card-body">
-                <form>
+                <form method="post">
+                    {% csrf_token %}
                     <!-- Form Group (current password)-->
                     <div class="mb-3">
                         <label class="small mb-1" for="currentPassword">Current Password</label>
-                        <input class="form-control" id="currentPassword" type="password" placeholder="Enter current password" disabled>
+                        {% comment %} <input class="form-control" id="currentPassword" type="password" placeholder="" disabled> {% endcomment %}
+                        {{change_password_form.current_password}}
                     </div>
                     <!-- Form Group (new password)-->
                     <div class="mb-3">
                         <label class="small mb-1" for="newPassword">New Password</label>
-                        <input class="form-control" id="newPassword" type="password" placeholder="Enter new password" disabled>
+                        {% comment %} <input class="form-control" id="newPassword" type="password" placeholder="Enter new password" disabled> {% endcomment %}
+                        {{change_password_form.new_password}}
                     </div>
                     <!-- Form Group (confirm password)-->
                     <div class="mb-3">
                         <label class="small mb-1" for="confirmPassword">Confirm Password</label>
-                        <input class="form-control" id="confirmPassword" type="password" placeholder="Confirm new password" disabled>
+                        {% comment %} <input class="form-control" id="confirmPassword" type="password" placeholder="Confirm new password" disabled> {% endcomment %}
+                        {{change_password_form.confirm_password}}
                     </div>
-                    <button class="btn btn-primary" type="button" disabled>Save</button>
+                    <div class="alert alert-warning p-2" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>You will be logged out if you change your password.
+                    </div>
+                    <button class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>
