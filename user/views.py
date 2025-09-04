@@ -14,7 +14,7 @@ from django.core.mail import EmailMessage
 from django.urls import reverse
 
 
-from .forms import LoginForm, RegistrationForm, ResetPasswordEmail
+from .forms import LoginForm, RegistrationForm, ResetPasswordEmail, SettingsProfile
 from .tokens import account_activation_token
 
 
@@ -43,7 +43,8 @@ def login_user(request):
                 login(request, user)
                 return redirect("library:home")
 
-            elif user := User.objects.get(username=form.cleaned_data["username"]):
+            elif User.objects.filter(username=form.cleaned_data["username"]).exists():
+                user = User.objects.get(username=form.cleaned_data["username"])
                 if (
                     user.check_password(form.cleaned_data["password"])
                     and user is not None
@@ -155,6 +156,7 @@ def activate(request, uidb64, token):
 
     return redirect(reverse("library:home"))
 
+
 # TODO Add rate limit
 def resend_email(request):
     context = {}
@@ -185,11 +187,55 @@ def logout_user(request):
 
 
 @login_required
-def settings_profile_user(request):
-    context = {}
+def settings_profile_user(
+    request,
+):  # TODO finished profile settings (save settings / upload image)
+    if request.method == "POST":
+        form = SettingsProfile(request.POST)
+        if form.is_valid():
+            user = User.objects.get(pk=request.user.pk)
+
+            if form.cleaned_data.get("username"):
+                user.username = form.cleaned_data["username"]
+            if form.cleaned_data.get("first_name"):
+                user.first_name = form.cleaned_data["first_name"]
+            if form.cleaned_data.get("last_name"):
+                user.last_name = form.cleaned_data["last_name"]
+            if form.cleaned_data.get("location"):
+                # Will be done in the next patch
+                pass
+            if form.cleaned_data.get("email"):
+                # Changing an email address is done via a letter to the user's primary email address.
+                pass
+                # user.last_name = form.cleaned_data["email"]
+            if form.cleaned_data.get("phone_number"):
+                # Will be done in the next patch
+                pass
+            if form.cleaned_data.get("birthday"):
+                # Will be done in the next patch
+                pass
+            user.save()
+            return redirect(reverse("user:settings_profile"))
+        else:
+            messages.error("Oops... Something wrong")
+
+    context = {
+        "form": SettingsProfile(
+            {
+                "username": request.user.username,
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "location": None,
+                "email": request.user.email,
+                "phone_number": None,
+                "birthday": None,
+            }
+        )
+    }
     return render(request, "user/settings_profile.html", context=context)
 
 
+# TODO add reset password through email
 @login_required
 def settings_security_user(request):
     context = {}

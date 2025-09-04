@@ -46,3 +46,46 @@ class ResetPasswordEmail(forms.Form):
     email = forms.EmailField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"})
     )
+
+
+class SettingsProfile(forms.Form):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Username"}
+        ),
+        required=False,
+    )
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "First name"}
+        ),
+        required=False,
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Second name"}
+        ),
+        required=False,
+    )
+    location = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Location"}
+        ),
+        required=False,
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"}),
+        required=False,
+    )
+    phone_number = forms.CharField(
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "Phone number"}
+        ),
+        required=False,
+    )
+    birthday = forms.CharField(
+        widget=forms.DateInput(
+            attrs={"class": "form-control", "placeholder": "Birthday"}
+        ),
+        required=False,
+    )
