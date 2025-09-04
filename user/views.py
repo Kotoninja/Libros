@@ -191,10 +191,13 @@ def settings_profile_user(
     request,
 ):  # TODO finished profile settings (save settings / upload image)
     if request.method == "POST":
-        form = SettingsProfile(request.POST)
+        form = SettingsProfile(request.POST, request.FILES)
         if form.is_valid():
             user = User.objects.get(pk=request.user.pk)
 
+            if form.cleaned_data.get("user_image"):
+                # Will be done in the next patch
+                pass
             if form.cleaned_data.get("username"):
                 user.username = form.cleaned_data["username"]
             if form.cleaned_data.get("first_name"):

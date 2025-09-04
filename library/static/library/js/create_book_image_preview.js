@@ -6,6 +6,5 @@ imageInput.addEventListener("change", (event) => {
 
     const objectURL = URL.createObjectURL(fileObject);
 
-    console.log(objectURL);
     imagePreview.setAttribute("src", objectURL)
 });

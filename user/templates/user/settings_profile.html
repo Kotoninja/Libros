@@ -5,6 +5,7 @@
 
 {% block content %}
 <div>{% include "base_settings.html" %}</div>
+<form action="" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-xl-4">
             <!-- Profile picture card-->
@@ -12,11 +13,12 @@
                 <div class="card-header">Profile Picture</div>
                 <div class="card-body text-center">
                     <!-- Profile picture image-->
-                    <img class="img-account-profile rounded-circle mb-2" src="{% static 'images/default_user_photo.png' %}" alt="">
+                    <img class="img-account-profile rounded-circle mb-2"
+                        src="{% static 'images/default_user_photo.png' %}" alt="User Photo" id="image-preview" width="350px" height="350px">
                     <!-- Profile picture help block-->
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <!-- Profile picture upload button-->
-                    <button class="btn btn-primary" type="button" disabled >Upload new image</button>
+                    {{form.user_image}}
                 </div>
             </div>
         </div>
@@ -25,57 +27,58 @@
             <div class="card mb-4">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        <!-- Form Group (username)-->
-                        <div class="mb-3">
-                            <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on the site)</label>
-                            {{form.username}}
+                    {% csrf_token %}
+                    <!-- Form Group (username)-->
+                    <div class="mb-3">
+                        <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users
+                            on the site)</label>
+                        {{form.username}}
+                    </div>
+                    <!-- Form Row-->
+                    <div class="row gx-3 mb-3">
+                        <!-- Form Group (first name)-->
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputFirstName">First name</label>
+                            {{form.first_name}}
                         </div>
-                        <!-- Form Row-->
-                        <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">First name</label>
-                                {{form.first_name}}
-                            </div>
-                            <!-- Form Group (last name)-->
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">Last name</label>
-                                {{form.last_name}}
-                            </div>
+                        <!-- Form Group (last name)-->
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputLastName">Last name</label>
+                            {{form.last_name}}
                         </div>
-                        <!-- Form Row-->
-                        <div class="row mb-3">
-                            <!-- Form Group (location)-->
-                            <div class="small mb-1">
-                                <label class="small mb-1" for="inputLocation">Location</label>
-                                {{form.location}}
-                            </div>
+                    </div>
+                    <!-- Form Row-->
+                    <div class="row mb-3">
+                        <!-- Form Group (location)-->
+                        <div class="small mb-1">
+                            <label class="small mb-1" for="inputLocation">Location</label>
+                            {{form.location}}
                         </div>
-                        <!-- Form Group (email address)-->
-                        <div class="mb-3">
-                            <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                            {{form.email}}
+                    </div>
+                    <!-- Form Group (email address)-->
+                    <div class="mb-3">
+                        <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                        {{form.email}}
+                    </div>
+                    <!-- Form Row-->
+                    <div class="row gx-3 mb-3">
+                        <!-- Form Group (phone number)-->
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputPhone">Phone number</label>
+                            {{form.phone_number}}
                         </div>
-                        <!-- Form Row-->
-                        <div class="row gx-3 mb-3">
-                            <!-- Form Group (phone number)-->
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="inputPhone">Phone number</label>
-                                {{form.phone_number}}
-                            </div>
-                            <!-- Form Group (birthday)-->
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="inputBirthday">Birthday</label>
-                                {{form.birthday}}
-                            </div>
+                        <!-- Form Group (birthday)-->
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputBirthday">Birthday</label>
+                            {{form.birthday}}
                         </div>
-                        <!-- Save changes button-->
-                        <button class="btn btn-primary" type="submit">Save changes</button>
-                    </form>
+                    </div>
+                    <!-- Save changes button-->
+                    <button class="btn btn-primary" type="submit">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
+</form>
+<script src = {% static 'user/js/user_photo_previews.js' %}></script>
 {% endblock content %}

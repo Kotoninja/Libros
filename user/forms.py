@@ -49,6 +49,7 @@ class ResetPasswordEmail(forms.Form):
 
 
 class SettingsProfile(forms.Form):
+    user_image = forms.ImageField(widget=forms.FileInput(attrs={"class":"form-control","type":"file","id":"image-input"}), required=False)
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "Username"}
