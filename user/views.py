@@ -248,7 +248,6 @@ def settings_profile_user(
     return render(request, "user/settings_profile.html", context=context)
 
 
-# TODO add reset password through email
 @login_required
 def settings_security_user(request):
     if request.method == "POST":
@@ -259,14 +258,19 @@ def settings_security_user(request):
             new_password = change_password_form.cleaned_data["new_password"]
             confirm_password = change_password_form.cleaned_data["confirm_password"]
 
-            if User.objects.filter(pk=request.user.pk).exists(): # TODO add check if currect password is new password
+            if User.objects.filter(pk=request.user.pk).exists():
                 user = User.objects.get(pk=request.user.pk)
                 if user.check_password(current_password):
-                    if new_password == confirm_password:
+                    if (
+                        new_password == confirm_password
+                        and current_password != new_password
+                    ):
                         user.set_password(new_password)
                         user.save()
-                        messages.success(request, "Password successfully changed") # TODO Rework next in url
-                        return redirect(f"{reverse("user:login")}?next={request.path}")
+                        messages.success(request, "Password successfully changed")
+                        return redirect(reverse("user:login"))
+                    elif current_password == new_password == confirm_password:
+                        messages.error(request, "This password is already in use")
                     else:
                         messages.error(request, "Passwords do not match")
                 else:
