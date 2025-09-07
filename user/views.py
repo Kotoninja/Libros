@@ -20,6 +20,7 @@ from .forms import (
     ResetPasswordEmail,
     SettingsProfile,
     ChangePassword,
+    ChangePasswordByEmail
 )
 from .tokens import account_activation_token
 
@@ -293,11 +294,51 @@ def settings_billing_user(request):
     return render(request, "user/settings_billing.html", context=context)
 
 
-def reset_password_user(request):
+def send_email_reset_password(request, to_email):
+    user = User.objects.get(email=to_email)
+    context = {
+        "user": user.username,
+        "domain": get_current_site(request).domain,
+        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+        "token": account_activation_token.make_token(user),
+        "protocol": "https" if request.is_secure() else "http",
+    }
+    message = render_to_string("template_reset_password.html", context=context)
+    email = EmailMessage("Reset password", message, to=[to_email])
+    if email.send():
+        messages.success(
+            request,
+            "Email send",
+        )
+        
+    else:
+        messages.error(
+            request,
+            f"Problem sending reset password to {to_email}, check if you typed it correctly.",
+        )
+
+
+def reset_password_user(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        pass
+    return HttpResponse(urlsafe_base64_decode(force_str(uidb64)))
+
+
+def reset_password_user_request_to_email(request):
     context = {}
 
     if request.method == "POST":
         form = ResetPasswordEmail(request.POST)
+        if form.is_valid():
+            send_email_reset_password(
+                request=request, to_email=form.cleaned_data["email"]
+            )
     else:
         form = ResetPasswordEmail()
 
