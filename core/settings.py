@@ -164,7 +164,7 @@ MEDIA_URL = "/media/"
 
 LOGIN_URL = reverse_lazy("user:login")
 LOGIN_REDIRECT_URL = reverse_lazy("user:registration")
-LOGOUT_URL = reverse_lazy("user:logout")
+# LOGOUT_URL = reverse_lazy("user:logout")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")
