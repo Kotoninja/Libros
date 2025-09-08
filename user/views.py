@@ -20,7 +20,7 @@ from .forms import (
     ResetPasswordEmail,
     SettingsProfile,
     ChangePassword,
-    ChangePasswordByEmail
+    ResetPassword,
 )
 from .tokens import account_activation_token
 
@@ -299,7 +299,8 @@ def send_email_reset_password(request, to_email):
     context = {
         "user": user.username,
         "domain": get_current_site(request).domain,
-        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+        "pk": urlsafe_base64_encode(force_bytes(user.pk)),
+        "email": urlsafe_base64_encode(force_bytes(user.email)),
         "token": account_activation_token.make_token(user),
         "protocol": "https" if request.is_secure() else "http",
     }
@@ -310,7 +311,7 @@ def send_email_reset_password(request, to_email):
             request,
             "Email send",
         )
-        
+
     else:
         messages.error(
             request,
@@ -318,16 +319,40 @@ def send_email_reset_password(request, to_email):
         )
 
 
-def reset_password_user(request, uidb64, token):
+def reset_password_user(request, pk, email, token):
     try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        pk = force_str(urlsafe_base64_decode(pk))
+        email = force_str(urlsafe_base64_decode(email))
+        user = User.objects.get(pk=pk, email=email)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist, AttributeError):
         user = None
+        messages.error(request, "Oops... Something wrong")
+        return redirect(reverse("library:home"))
 
-    if user is not None and account_activation_token.check_token(user, token):
-        pass
-    return HttpResponse(urlsafe_base64_decode(force_str(uidb64)))
+    if request.method == "POST":
+        if user is not None and account_activation_token.check_token(user, token):
+            form = ResetPassword(request.POST)
+            if form.is_valid():
+                if (
+                    form.cleaned_data["new_password"]
+                    == form.cleaned_data["confirm_password"]
+                ):
+                    if not user.check_password(form.cleaned_data["new_password"]):
+                        user.set_password(form.cleaned_data["new_password"])
+                        user.save()
+                        messages.success(request, "Password successfully changed")
+                        return redirect(reverse("user:login"))
+
+                    else:
+                        messages.error(request, "This password is already in use")
+                else:
+                    messages.error(request, "Passwords do not match")
+        else:
+            messages.error(request, "Oops... Something wrong")
+            return redirect(reverse("user:login"))
+
+    context = {"form": ResetPassword()}
+    return render(request, "user/reset_password_user.html", context=context)
 
 
 def reset_password_user_request_to_email(request):
@@ -343,4 +368,4 @@ def reset_password_user_request_to_email(request):
         form = ResetPasswordEmail()
 
     context |= {"form": form}
-    return render(request, "user/reset_password_user.html", context=context)
+    return render(request, "user/reset_password_user_email.html", context=context)
