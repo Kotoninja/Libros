@@ -48,8 +48,26 @@ class ResetPasswordEmail(forms.Form):
     )
 
 
+class ResetPassword(forms.Form):
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Enter new password"}
+        )
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Confirm new password"}
+        )
+    )
+
+
 class SettingsProfile(forms.Form):
-    user_image = forms.ImageField(widget=forms.FileInput(attrs={"class":"form-control","type":"file","id":"image-input"}), required=False)
+    user_image = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={"class": "form-control", "type": "file", "id": "image-input"}
+        ),
+        required=False,
+    )
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "Username"}
@@ -90,6 +108,7 @@ class SettingsProfile(forms.Form):
         ),
         required=False,
     )
+
 
 class ChangePassword(forms.Form):
     current_password = forms.CharField(
