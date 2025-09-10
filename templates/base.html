@@ -20,7 +20,7 @@
 <body class="bg-dark-subtle">
     <header>
         <nav class="navbar fixed-top navbar-expand-lg p-0">
-            <div class="container bg-dark bg-gradient rounded-bottom-4">
+            <div class="container bg-dark bg-gradient rounded-bottom-4 py-1">
                 <div class="navbar-brand fs-3 col-1 col-lg-4 col-md-2 col-sm-1 user-select-none"> 
                     <a class="text-decoration-none text-white" href="{% url 'library:home' %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -49,8 +49,12 @@
                             <div class="dropdown text-center">
                                 <a href="{% url 'user:profile' %}" class="d-block text-decoration-none dropdown-toggle ktn-link-body-primary d-flex justify-content-center align-items-center text-white" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="d-flex flex-row d-lg-flex flex-lg-column justify-content-center align-items-center">
+                                        {% if user.userprofile.photo.url %}
+                                        <img class="rounded-circle" src="{{user.userprofile.photo.url}}" alt="user photo" style="height: 26px; width: 26px;">
+                                        {% else %}
                                         <i class="bi bi-person-circle fs-5 d-lg-block d-none"></i>
                                         <i class="bi bi-person-circle fs-1 d-lg-none d-block"></i>
+                                        {% endif %}
                                         {% if user.is_authenticated %}
                                         <span class="d-lg-block d-flex">{{request.user.userprofile.nickname}}</span>
                                         {% else %}
