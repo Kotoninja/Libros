@@ -16,6 +16,7 @@ class UserProfile(models.Model):
         upload_to="images/%Y/%m/%d",
         default=f"{settings.STATICFILES_DIRS}/images/default_user_photo.png",
     )
+    birthday = models.DateField(blank=True, null=True)
 
     def __str__(self) -> str:
         if self.nickname:
@@ -26,4 +27,4 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **Kwargs):
     if created:
-        UserProfile.objects.create(user=instance,nickname=instance.username)
+        UserProfile.objects.create(user=instance, nickname=instance.username)

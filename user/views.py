@@ -34,12 +34,6 @@ def get_errors_from_form(request, form):
         )
 
 
-# def handle_uploaded_file(f):
-#     with open(f"{}/file/name.txt", "wb+") as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
-
-
 def login_user(request):
     context = {}
     if request.method == "POST":
@@ -213,7 +207,7 @@ def settings_profile_user(
             user = User.objects.get(pk=request.user.pk)
 
             if form.cleaned_data.get("user_image"):
-                pass
+                user.userprofile.photo = form.cleaned_data["user_image"]  # type: ignore
             if form.cleaned_data.get("nickname"):
                 user.userprofile.nickname = form.cleaned_data["nickname"]  # type: ignore
             if form.cleaned_data.get("first_name"):
@@ -221,16 +215,16 @@ def settings_profile_user(
             if form.cleaned_data.get("last_name"):
                 user.last_name = form.cleaned_data["last_name"]
             if form.cleaned_data.get("location"):
-                user.userprofile.nickname = form.cleaned_data["location"]  # type: ignore
+                user.userprofile.location = form.cleaned_data["location"]  # type: ignore
             if form.cleaned_data.get("email"):
                 # Changing an email address is done via a letter to the user's primary email address.
                 pass
                 # user.last_name = form.cleaned_data["email"]
             if form.cleaned_data.get("phone_number"):
-                user.userprofile.nickname = form.cleaned_data["phone_number"]  # type: ignore
+                user.userprofile.phone_number = form.cleaned_data["phone_number"]  # type: ignore
 
             if form.cleaned_data.get("birthday"):
-                user.userprofile.nickname = form.cleaned_data["birthday"]  # type: ignore
+                user.userprofile.birthday = form.cleaned_data["birthday"]  # type: ignore
 
             user.userprofile.save()  # type: ignore
             user.save()
@@ -244,10 +238,10 @@ def settings_profile_user(
                 "nickname": request.user.userprofile.nickname,
                 "first_name": request.user.first_name,
                 "last_name": request.user.last_name,
-                "location": None,
+                "location": request.user.userprofile.location,
                 "email": request.user.email,
-                "phone_number": None,
-                "birthday": None,
+                "phone_number": request.user.userprofile.phone_number,
+                "birthday": request.user.userprofile.birthday,
             }
         )
     }

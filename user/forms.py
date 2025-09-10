@@ -95,17 +95,20 @@ class SettingsProfile(forms.Form):
     email = forms.EmailField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"}),
         required=False,
-        disabled=True
+        disabled=True,
     )
     phone_number = forms.CharField(
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Phone number"}
+        widget=forms.TelInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Phone number (+1 123-456-7890)",
+            }
         ),
         required=False,
     )
-    birthday = forms.CharField(
+    birthday = forms.DateField(
         widget=forms.DateInput(
-            attrs={"class": "form-control", "placeholder": "Birthday"}
+            attrs={"class": "form-control", "placeholder": "Birthday", "type": "date"}
         ),
         required=False,
     )

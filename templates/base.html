@@ -45,14 +45,14 @@
                 </button>
                 <div class="collapse navbar-collapse col-lg-4 col-md-3" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto">
-                        <li class="nav-item col-1 col-lg-12">
+                        <li class="nav-item d-flex">
                             <div class="dropdown text-center">
                                 <a href="{% url 'user:profile' %}" class="d-block text-decoration-none dropdown-toggle ktn-link-body-primary d-flex justify-content-center align-items-center text-white" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div class="d-flex flex-column justify-content-center align-items-center">
+                                    <div class="d-flex flex-row d-lg-flex flex-lg-column justify-content-center align-items-center">
                                         <i class="bi bi-person-circle fs-5 d-lg-block d-none"></i>
                                         <i class="bi bi-person-circle fs-1 d-lg-none d-block"></i>
                                         {% if user.is_authenticated %}
-                                        <span class="d-lg-block d-none">{{request.user.username}}</span>
+                                        <span class="d-lg-block d-flex">{{request.user.userprofile.nickname}}</span>
                                         {% else %}
                                         <span class="d-lg-block d-none">Account</span>
                                         {% endif %}
