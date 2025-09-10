@@ -68,9 +68,9 @@ class SettingsProfile(forms.Form):
         ),
         required=False,
     )
-    username = forms.CharField(
+    nickname = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Username"}
+            attrs={"class": "form-control", "placeholder": "Nickname"}
         ),
         required=False,
     )
@@ -95,6 +95,7 @@ class SettingsProfile(forms.Form):
     email = forms.EmailField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"}),
         required=False,
+        disabled=True
     )
     phone_number = forms.CharField(
         widget=forms.NumberInput(
