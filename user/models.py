@@ -5,16 +5,13 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
-# Create your models here.
-# TODO expand user db, add username (create log in with login), location, phone number, birthday
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     nickname = models.CharField(max_length=30, blank=True)
     location = models.CharField(max_length=100, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     photo = models.ImageField(
-        upload_to="images/%Y/%m/%d",
-        default=f"{settings.STATICFILES_DIRS}/images/default_user_photo.png",
+        upload_to="images/%Y/%m/%d", default="images/default_user_photo.png"
     )
     birthday = models.DateField(blank=True, null=True)
 
