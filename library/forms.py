@@ -13,7 +13,8 @@ class CreateBookForm(forms.ModelForm):
         fields = ["image", "title", "description", "tags", "price"]
         widgets = {
             "image": forms.FileInput(
-                attrs={"class": "form-control", "id": "image-input"}
+                attrs={"class": "form-control", "id": "image-input"},
+
             ),
             "title": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Title"}

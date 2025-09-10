@@ -206,6 +206,7 @@ __marimo__/
 notes/
 Makefile
 
-
+# Media
 media/images/*
 !media/images/default.webp
+!media/images/default_user_photo.png

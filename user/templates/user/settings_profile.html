@@ -14,7 +14,7 @@
                 <div class="card-body text-center">
                     <!-- Profile picture image-->
                     <img class="img-account-profile rounded-circle mb-2"
-                        src="{% static 'images/default_user_photo.png' %}" alt="User Photo" id="image-preview" width="350px" height="350px">
+                        src={% if user.userprofile.photo %}{{user.userprofile.photo.url}}{% else %}"{% static 'images/default_user_photo.png' %}"{% endif %} alt="User Photo" id="image-preview" width="350px" height="350px">
                     <!-- Profile picture help block-->
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <!-- Profile picture upload button-->
@@ -32,7 +32,7 @@
                     <div class="mb-3">
                         <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users
                             on the site)</label>
-                        {{form.username}}
+                        {{form.nickname}}
                     </div>
                     <!-- Form Row-->
                     <div class="row gx-3 mb-3">

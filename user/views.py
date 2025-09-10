@@ -12,7 +12,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.urls import reverse
-
+from django.conf import settings
 
 from .forms import (
     LoginForm,
@@ -207,27 +207,26 @@ def settings_profile_user(
             user = User.objects.get(pk=request.user.pk)
 
             if form.cleaned_data.get("user_image"):
-                # Will be done in the next patch
-                pass
-            if form.cleaned_data.get("username"):
-                user.username = form.cleaned_data["username"]
+                user.userprofile.photo = form.cleaned_data["user_image"]  # type: ignore
+            if form.cleaned_data.get("nickname"):
+                user.userprofile.nickname = form.cleaned_data["nickname"]  # type: ignore
             if form.cleaned_data.get("first_name"):
                 user.first_name = form.cleaned_data["first_name"]
             if form.cleaned_data.get("last_name"):
                 user.last_name = form.cleaned_data["last_name"]
             if form.cleaned_data.get("location"):
-                # Will be done in the next patch
-                pass
+                user.userprofile.location = form.cleaned_data["location"]  # type: ignore
             if form.cleaned_data.get("email"):
                 # Changing an email address is done via a letter to the user's primary email address.
                 pass
                 # user.last_name = form.cleaned_data["email"]
             if form.cleaned_data.get("phone_number"):
-                # Will be done in the next patch
-                pass
+                user.userprofile.phone_number = form.cleaned_data["phone_number"]  # type: ignore
+
             if form.cleaned_data.get("birthday"):
-                # Will be done in the next patch
-                pass
+                user.userprofile.birthday = form.cleaned_data["birthday"]  # type: ignore
+
+            user.userprofile.save()  # type: ignore
             user.save()
             return redirect(reverse("user:settings_profile"))
         else:
@@ -236,13 +235,13 @@ def settings_profile_user(
     context = {
         "form": SettingsProfile(
             {
-                "username": request.user.username,
+                "nickname": request.user.userprofile.nickname,
                 "first_name": request.user.first_name,
                 "last_name": request.user.last_name,
-                "location": None,
+                "location": request.user.userprofile.location,
                 "email": request.user.email,
-                "phone_number": None,
-                "birthday": None,
+                "phone_number": request.user.userprofile.phone_number,
+                "birthday": request.user.userprofile.birthday,
             }
         )
     }
@@ -319,7 +318,9 @@ def send_email_reset_password(request, to_email):
         )
 
 
-def reset_password_user(request, pk, email, token):
+def reset_password_user(
+    request, pk, email, token
+):  # FIXME added error masseg if email invalid
     try:
         pk = force_str(urlsafe_base64_decode(pk))
         email = force_str(urlsafe_base64_decode(email))
