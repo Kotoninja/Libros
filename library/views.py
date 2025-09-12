@@ -5,12 +5,13 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
 
 # Other
 from .models import Book
 from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
-
+import random
 
 def get_errors_from_form(request, form):
     for error_field, error_message in form.errors.as_data().items():
@@ -19,7 +20,7 @@ def get_errors_from_form(request, form):
             f"{error_field.capitalize().replace('_', ' ')} : {error_message[0].message}",
         )
 
-
+@cache_page(60*5)
 def home(request):
     paginator = Paginator(Book.objects.all(), 12)
 
@@ -28,7 +29,11 @@ def home(request):
 
     return render(request, "library/home.html", {"page_obj": page_obj})
 
+def get_random_book(request):
+    # return HttpResponse(Book.objects.order_by('?').first().pk)
+    return redirect(reverse("library:book",args=(Book.objects.order_by('?').first().pk,)))
 
+@cache_page(60*10)
 def book(request, id):
     def get_rating(rating) -> list:
         rating_list: list = []

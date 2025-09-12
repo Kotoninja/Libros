@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import environ
 from django.urls import reverse_lazy
+import sys
 
 env = environ.Env(
     # set casting, default value
@@ -114,8 +115,12 @@ DATABASES = {
 #     }
 # }
 
-# TODO Add Cache (Redis) 
-
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
