@@ -30,7 +30,6 @@ def home(request):
     return render(request, "library/home.html", {"page_obj": page_obj})
 
 def get_random_book(request):
-    # return HttpResponse(Book.objects.order_by('?').first().pk)
     return redirect(reverse("library:book",args=(Book.objects.order_by('?').first().pk,)))
 
 @cache_page(60*10)
