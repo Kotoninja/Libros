@@ -6,12 +6,14 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 # Other
 from .models import Book
 from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
 import random
+
 
 def get_errors_from_form(request, form):
     for error_field, error_message in form.errors.as_data().items():
@@ -20,19 +22,33 @@ def get_errors_from_form(request, form):
             f"{error_field.capitalize().replace('_', ' ')} : {error_message[0].message}",
         )
 
-@cache_page(60*5)
-def home(request):
-    paginator = Paginator(Book.objects.all(), 12)
 
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+def home(request):
+    page_number = request.GET.get("page", 1)
+    cache_key = f"home_page_{page_number}"
+
+    books_data = cache.get(cache_key)
+
+    if books_data is None:
+        paginator = Paginator(Book.objects.all(), 12)
+        page_obj = paginator.get_page(page_number)
+
+        cache.set(cache_key, {"paginator": paginator, "page_obj": page_obj}, timeout=600)
+
+    else:
+        paginator = books_data["paginator"]
+        page_obj = books_data["page_obj"]
 
     return render(request, "library/home.html", {"page_obj": page_obj})
 
-def get_random_book(request):
-    return redirect(reverse("library:book",args=(Book.objects.order_by('?').first().pk,)))
 
-@cache_page(60*10)
+def get_random_book(request):
+    return redirect(
+        reverse("library:book", args=(Book.objects.order_by("?").first().pk,))
+    )
+
+
+# @cache_page(60 * 10)
 def book(request, id):
     def get_rating(rating) -> list:
         rating_list: list = []

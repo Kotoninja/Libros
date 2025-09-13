@@ -2,6 +2,7 @@ asgiref==3.9.1
 Django==5.2.5
 django-debug-toolbar==6.0.0
 django-environ==0.12.0
+django-redis==6.0.0
 django-taggit==6.1.0
 Faker==37.5.3
 hiredis==3.2.1
