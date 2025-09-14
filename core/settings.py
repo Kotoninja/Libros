@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import environ
 from django.urls import reverse_lazy
+import sys
 
 env = environ.Env(
     # set casting, default value
@@ -71,6 +72,16 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+}
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+SHOW_TOOLBAR_CALLBACK = True
+
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
@@ -114,8 +125,15 @@ DATABASES = {
 #     }
 # }
 
-# TODO Add Cache (Redis) 
-
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -178,3 +196,15 @@ SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
 PASSWORD_RESET_TIMEOUT = 14400
+
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
+
+if not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]

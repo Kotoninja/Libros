@@ -5,11 +5,14 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 # Other
 from .models import Book
 from .forms import CreateBookForm, AdditionalSearchFilter
 from core.forms import SearchForm
+import random
 
 
 def get_errors_from_form(request, form):
@@ -21,12 +24,30 @@ def get_errors_from_form(request, form):
 
 
 def home(request):
-    paginator = Paginator(Book.objects.all(), 12)
+    page_number = request.GET.get("page", 1)
+    cache_key = f"home_page_{page_number}"
 
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    books_data = cache.get(cache_key)
+
+    if books_data is None:
+        paginator = Paginator(Book.objects.all(), 12)
+        page_obj = paginator.get_page(page_number)
+
+        cache.set(
+            cache_key, {"paginator": paginator, "page_obj": page_obj}, timeout=600
+        )
+
+    else:
+        paginator = books_data["paginator"]
+        page_obj = books_data["page_obj"]
 
     return render(request, "library/home.html", {"page_obj": page_obj})
+
+
+def get_random_book(request):
+    return redirect(
+        reverse("library:book", args=(Book.objects.order_by("?").first().pk,))
+    )
 
 
 def book(request, id):
@@ -46,11 +67,21 @@ def book(request, id):
             i -= 1
         return rating_list
 
-    book = get_object_or_404(Book, pk=id)
+    cache_key = f"book_page_{id}"
+    cache_data = cache.get(cache_key)
+
+    if cache_data is None:
+        book = get_object_or_404(Book, pk=id)
+        rating = get_rating(book.rating)
+        cache.set(cache_key, {"book": book, "rating": rating})
+    else:
+        book = cache_data["book"]
+        rating = cache_data["rating"]
+
     return render(
         request,
         "library/book.html",
-        context={"book": book, "rating": get_rating(book.rating)},
+        context={"book": book, "rating": rating},
     )
 
 
