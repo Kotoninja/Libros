@@ -33,7 +33,9 @@ def home(request):
         paginator = Paginator(Book.objects.all(), 12)
         page_obj = paginator.get_page(page_number)
 
-        cache.set(cache_key, {"paginator": paginator, "page_obj": page_obj}, timeout=600)
+        cache.set(
+            cache_key, {"paginator": paginator, "page_obj": page_obj}, timeout=600
+        )
 
     else:
         paginator = books_data["paginator"]
@@ -48,7 +50,6 @@ def get_random_book(request):
     )
 
 
-# @cache_page(60 * 10)
 def book(request, id):
     def get_rating(rating) -> list:
         rating_list: list = []
@@ -66,11 +67,21 @@ def book(request, id):
             i -= 1
         return rating_list
 
-    book = get_object_or_404(Book, pk=id)
+    cache_key = f"book_page_{id}"
+    cache_data = cache.get(cache_key)
+
+    if cache_data is None:
+        book = get_object_or_404(Book, pk=id)
+        rating = get_rating(book.rating)
+        cache.set(cache_key, {"book": book, "rating": rating})
+    else:
+        book = cache_data["book"]
+        rating = cache_data["rating"]
+
     return render(
         request,
         "library/book.html",
-        context={"book": book, "rating": get_rating(book.rating)},
+        context={"book": book, "rating": rating},
     )
 
 
