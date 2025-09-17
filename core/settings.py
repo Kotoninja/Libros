@@ -73,7 +73,7 @@ MIDDLEWARE = [
 ]
 
 DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
 
 INTERNAL_IPS = [
@@ -131,7 +131,7 @@ CACHES = {
         "LOCATION": "redis://redis:6379",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
     }
 }
 
@@ -208,3 +208,5 @@ if not TESTING:
         "debug_toolbar.middleware.DebugToolbarMiddleware",
         *MIDDLEWARE,
     ]
+
+CART_SESSION_ID = "cart"
