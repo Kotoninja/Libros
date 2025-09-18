@@ -14,6 +14,8 @@ from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.conf import settings
 
+from cart.cart import Cart
+
 from .forms import (
     LoginForm,
     RegistrationForm,
@@ -370,3 +372,15 @@ def reset_password_user_request_to_email(request):
 
     context |= {"form": form}
     return render(request, "user/reset_password_user_email.html", context=context)
+
+
+def cart(request):
+    cart = Cart(request)
+
+    if len(cart):
+        
+        for product in cart:
+            print(product)
+    else:
+        print("Cart is umpty")
+    return HttpResponse(cart)

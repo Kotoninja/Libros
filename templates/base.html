@@ -45,9 +45,9 @@
                 </button>
                 <div class="collapse navbar-collapse col-lg-4 col-md-3" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto">
-                        <li class="nav-item d-flex">
-                            <div class="dropdown text-center">
-                                <a href="{% url 'user:profile' %}" class="d-block text-decoration-none dropdown-toggle ktn-link-body-primary d-flex justify-content-center align-items-center text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                        <li class="nav-item mx-1 d-flex">
+                            <div class="dropdown text-end">
+                                <a href="{% url 'user:profile' %}" class="text-decoration-none dropdown-toggle ktn-link-body-primary d-flex justify-content-center align-items-center text-white" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="d-flex flex-row d-lg-flex flex-lg-column justify-content-center align-items-center">
                                         {% if user.is_authenticated %}
                                         <img class="rounded-circle" src="{{user.userprofile.photo.url}}" alt="user photo" style="height: 26px;width: 26px;background: white;">
@@ -72,6 +72,14 @@
                                 {% endif %}
                             </div>
                         </li>
+                        {% if request.user.is_authenticated  %}
+                        <li class="nav-item text-light d-flex mx-1">
+                            <a href="{% url 'user:cart' %}" class="d-flex flex-row flex-lg-column text-decoration-none text-light">
+                                <i class="bi bi-cart3 d-flex m-auto fs-4"></i>
+                                <span class="">Cart</span>
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
 
