@@ -11,7 +11,7 @@ class Cart(object):
         self.cart = cart
 
     def add(self, product, quantity=1, update_quantity=False):
-        product_id = str(product.id)
+        product_id = str(product.pk)
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
                                     'price': str(product.price)}
@@ -35,7 +35,7 @@ class Cart(object):
         product_ids = self.cart.keys()
         products = Book.objects.filter(id__in=product_ids)
         for product in products:
-            self.cart[str(product.id)]['product'] = product
+            self.cart[str(product.pk)]['product'] = product
 
         for item in self.cart.values():
             item['price'] = (item['price'])

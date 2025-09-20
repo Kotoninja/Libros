@@ -1,0 +1,4 @@
+<button hx-post="{% url 'cart:remove' book_id=book.pk %}" 
+        hx-swap="outerHTML"
+        type="submit"
+        class="btn bg-primary-subtle w-100">In Cart</button>

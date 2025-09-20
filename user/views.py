@@ -12,7 +12,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.urls import reverse
-from django.conf import settings
 
 from cart.cart import Cart
 
@@ -25,7 +24,6 @@ from .forms import (
     ResetPassword,
 )
 from .tokens import account_activation_token
-
 
 def get_errors_from_form(request, form):
     for error_field, error_message in form.errors.as_data().items():
@@ -376,11 +374,4 @@ def reset_password_user_request_to_email(request):
 
 def cart(request):
     cart = Cart(request)
-
-    if len(cart):
-        
-        for product in cart:
-            print(product)
-    else:
-        print("Cart is umpty")
     return HttpResponse(cart)
