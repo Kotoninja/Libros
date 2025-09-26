@@ -1,6 +1,7 @@
 {% load static %}
 {% load errors_tags %}
 {% if messages %}
+<div id="alerts">
 {% for message in messages %}
     {% if message.tags == "success" %}
     <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
@@ -30,6 +31,7 @@
         </div>
     </div>
     {% endif %}
-    <script defer src="{% static 'errors_alert_triger.js' %}"></script>
+    <script id="trigger_alert" defer src="{% static 'alert_triger.js' %}"></script>
 {% endfor %}
+</div>
 {% endif %}

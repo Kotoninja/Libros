@@ -1,5 +1,6 @@
 <button hx-post="{% url 'cart:add' book_id=book.pk %}" 
+        hx-swap="none"
+        hx-trigger="Hello from:body"
         type="submit"
         class="btn btn-primary w-100"
-        hx-swap="outerHTML"
-        ><i class="bi bi-cart3"></i>Buy</button>
+        ><i class="bi bi-cart3"></i>Add to cart</button>
