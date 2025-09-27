@@ -21,6 +21,7 @@
     <header>
         <nav class="navbar fixed-top navbar-expand-lg p-0">
             <div class="container bg-dark bg-gradient rounded-bottom-4 py-1">
+                <div class="d-block" style="height: 68px;"></div>
                 <div class="navbar-brand fs-3 col-1 col-lg-4 col-md-2 col-sm-1 user-select-none"> 
                     <a class="text-decoration-none text-white" href="{% url 'library:home' %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -75,7 +76,9 @@
                         {% if request.user.is_authenticated  %}
                         <li class="nav-item text-light d-flex mx-1">
                             <a href="{% url 'user:cart' %}" class="d-flex flex-row flex-lg-column text-decoration-none text-light">
-                                <i class="bi bi-cart3 d-flex m-auto fs-4"></i>
+                                <i class="bi bi-cart3 d-flex m-auto fs-4 position-relative">
+                                    <span hx-get="{% url 'cart:len' %}" hx-trigger="load" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;"></span>
+                                </i>
                                 <span class="">Cart</span>
                             </a>
                         </li>

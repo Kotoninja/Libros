@@ -9,9 +9,7 @@ from django.contrib import messages
 import json
 
 """
-TODO add a counter to the cart
 TODO increase/reduce cart counter when add book
-TODO add alert when add/remove book in/from cart
 """
 
 
@@ -21,12 +19,14 @@ def cart_add(request, book_id):
     cart = Cart(request)
     product = get_object_or_404(Book, id=book_id)
     cart.add(product=product, quantity=1, update_quantity=True)
-    # return HttpResponse(
-    #     status=204,
-    #     headers={"HX-Trigger": json.dumps({"messages": [{"messages": message.message, "tags": message.tags}for message in messages.get_messages(request)]})})
-    # render_to_string(request=request, template_name="library/remove_book_from_cart.html",context={"book":product})
-    # return HttpResponse(render_to_string(request=request, template_name="library/remove_book_from_cart.html",context={"book":product}), headers = {"HX-Trigger": json.dumps({"messages": [{"messages": message.message, "tags": message.tags}for message in messages.get_messages(request)]})})
-    return HttpResponse(headers={"HX-Trigger":json.dumps({"Hello":"Hello"} )})
+    return HttpResponse(
+        render_to_string(
+            request=request,
+            template_name="library/remove_book_from_cart.html",
+            context={"book": product},
+        )
+    )
+
 
 @require_POST
 def cart_remove(request, book_id):
@@ -43,7 +43,9 @@ def cart_remove(request, book_id):
     )
 
 
-def remove_all(request):
+def get_lenght_items(request):
     cart = Cart(request)
-    cart.clear()
-    return redirect(reverse("library:home"))
+    cart_lenght = len(cart)
+    if cart_lenght:
+        return HttpResponse(len(cart), status=200)
+    return HttpResponse(status=204)
