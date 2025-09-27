@@ -8,10 +8,6 @@ from django.template.loader import render_to_string
 from django.contrib import messages
 import json
 
-"""
-TODO increase/reduce cart counter when add book
-"""
-
 
 @require_POST
 def cart_add(request, book_id):
@@ -19,13 +15,15 @@ def cart_add(request, book_id):
     cart = Cart(request)
     product = get_object_or_404(Book, id=book_id)
     cart.add(product=product, quantity=1, update_quantity=True)
-    return HttpResponse(
+    response = HttpResponse(
         render_to_string(
             request=request,
             template_name="library/remove_book_from_cart.html",
             context={"book": product},
         )
     )
+    response["Hx-Trigger"] = "cartUpdated"
+    return response
 
 
 @require_POST
@@ -34,13 +32,15 @@ def cart_remove(request, book_id):
     product = get_object_or_404(Book, id=book_id)
     cart.remove(product)
 
-    return HttpResponse(
+    response = HttpResponse(
         render_to_string(
             request=request,
             template_name="library/add_book_to_cart.html",
             context={"book": product},
         )
     )
+    response["Hx-Trigger"] = "cartUpdated"
+    return response
 
 
 def get_lenght_items(request):
@@ -48,4 +48,4 @@ def get_lenght_items(request):
     cart_lenght = len(cart)
     if cart_lenght:
         return HttpResponse(len(cart), status=200)
-    return HttpResponse(status=204)
+    return HttpResponse()
