@@ -77,7 +77,7 @@
                         <li class="nav-item text-light d-flex mx-1">
                             <a href="{% url 'user:cart' %}" class="d-flex flex-row flex-lg-column text-decoration-none text-light">
                                 <i class="bi bi-cart3 d-flex m-auto fs-4 position-relative">
-                                    <span id="cart_length" hx-get="{% url 'cart:len' %}" hx-trigger="load, cartUpdated from:body" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;"></span>
+                                    <span id="cart_length" hx-get="{% url 'cart:len' %}" hx-trigger="load, cartCounterUpdate from:body" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;"></span>
                                 </i>
                                 <span class="">Cart</span>
                             </a>

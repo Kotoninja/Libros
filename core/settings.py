@@ -55,6 +55,7 @@ INSTALLED_APPS = (
         # Your apps
         "library.apps.LibraryConfig",
         "user.apps.UserConfig",
+        "cart.apps.CartConfig"
     ]
     + [
         # Third party packages

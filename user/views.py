@@ -372,6 +372,12 @@ def reset_password_user_request_to_email(request):
     return render(request, "user/reset_password_user_email.html", context=context)
 
 
+
 def cart(request):
+    """
+    TODO: Add cache
+    TODO: Add a bucket to remove an item
+    FIXME: Add HTML markings
+    """
     context={"cart":Cart(request)}
-    return render(request,"user/cart.html",context=context)
+    return render(request,"user/user_cart.html",context=context)

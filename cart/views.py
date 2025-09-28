@@ -10,7 +10,7 @@ import json
 
 
 """
-TODO Add ajax check
+TODO: Add ajax check
 """
 
 
@@ -26,7 +26,7 @@ def cart_add(request, book_id):
             context={"book": product},
         )
     )
-    response["Hx-Trigger"] = "cartUpdated"
+    response["Hx-Trigger"] = "cartCounterUpdate"
     return response
 
 
@@ -43,7 +43,7 @@ def cart_remove(request, book_id):
             context={"book": product},
         )
     )
-    response["Hx-Trigger"] = "cartUpdated"
+    response["Hx-Trigger"] = "cartCounterUpdate"
     return response
 
 
@@ -53,3 +53,31 @@ def get_lenght_items(request):
     if cart_lenght:
         return HttpResponse(len(cart), status=200)
     return HttpResponse()
+
+
+@require_POST
+def update_quantity(request, product_id, quantity):
+    if quantity > 0:
+        cart = Cart(request)
+        product = get_object_or_404(Book, id=product_id)
+        cart.add(product=product, quantity=quantity, update_quantity=True)
+
+        quantity, price = cart.get_item(product_id=product_id).values()
+
+        item = {
+            "product": product,
+            "quantity": quantity,
+            "price": price,
+            "total_price": (int(quantity) * int(price)),
+        }
+        response = render(request, "cart/cart_item.html", context={"item": item})
+        response["Hx-Trigger"] = "cartCounterUpdate,cartPriceUpdate"
+
+        return response
+
+    return HttpResponse(status="204")
+
+
+def get_total_price(request):
+    cart = Cart(request)
+    return HttpResponse(cart.get_total_price())

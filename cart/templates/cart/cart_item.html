@@ -1,0 +1,28 @@
+<!-- ========== Start Item ========== -->
+<div class="d-flex mb-3" id="cart_item_{{item.product.pk}}">
+    <img src="{{item.product.image.url}}" class="rounded me-3 col-2" style="width: 100px; height: 125px;">
+    <!-- ========== Start Description ========== -->
+    <div class="col-6 position-relative">
+        <p>{{item.product.title}}</p>
+        <button class="position-absolute bottom-0 p-0 border border-0">
+            <i class="bi bi-trash-fill fs-4"></i>
+        </button>
+    </div>
+    <!-- ========== End Description ========== -->
+    <!-- ========== Start Count ========== -->
+    <div class="col-2 d-flex justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center">
+            <button hx-post="{% url 'cart:update_quantity' product_id=item.product.pk quantity=item.quantity|add:"-1" %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" type="button" class="btn bg-body-secondary p-1"><i class="bi bi-dash text-black"></i></button>
+            <span id="quantity" class="mx-2 fs-4">{{item.quantity}}</span>
+            <button hx-post="{% url 'cart:update_quantity' product_id=item.product.pk quantity=item.quantity|add:"1" %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" type="button" class="btn bg-body-secondary p-1"><i class="bi bi-plus text-black"></i></button>
+        </div>
+    </div>
+    <!-- ========== End Count ========== -->
+    <!-- ========== Start Price ========== -->
+    <div class="col-2 d-flex justify-content-center align-items-center">
+        <span class="fs-3 "><i class="bi bi-wallet2 me-1 my-auto text-black fs-5"></i>{{item.total_price}} &#8381</span>
+    </div>
+<!-- ========== End Price ========== -->
+</div>
+<!-- ========== End Item ========== -->
+

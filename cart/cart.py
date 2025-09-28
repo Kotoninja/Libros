@@ -13,12 +13,11 @@ class Cart(object):
     def add(self, product, quantity=1, update_quantity=False):
         product_id = str(product.pk)
         if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0,
-                                    'price': str(product.price)}
+            self.cart[product_id] = {"quantity": 0, "price": str(product.price)}
         if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            self.cart[product_id]["quantity"] = quantity
         else:
-            self.cart[product_id]['quantity'] += quantity
+            self.cart[product_id]["quantity"] += quantity
         self.save()
 
     def save(self):
@@ -35,20 +34,22 @@ class Cart(object):
         product_ids = self.cart.keys()
         products = Book.objects.filter(id__in=product_ids)
         for product in products:
-            self.cart[str(product.pk)]['product'] = product
+            self.cart[str(product.pk)]["product"] = product
 
         for item in self.cart.values():
-            item['price'] = (item['price'])
-            item['total_price'] = item['price'] * item['quantity']
+            item["price"] = item["price"]
+            item["total_price"] = int(item["price"]) * item["quantity"]
             yield item
 
     def __len__(self):
-        return sum(item['quantity'] for item in self.cart.values())
+        return sum(item["quantity"] for item in self.cart.values())
 
     def get_total_price(self):
-        return sum((item['price']) * item['quantity'] for item in
-                self.cart.values())
-    
+        return sum(int(item["price"]) * item["quantity"] for item in self.cart.values())
+
     def clear(self):
         del self.session[settings.CART_SESSION_ID]
         self.session.modified = True
+
+    def get_item(self, product_id: int | str):
+        return self.cart[str(product_id)]
