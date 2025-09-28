@@ -15,9 +15,9 @@ TODO: Add ajax check
 
 
 @require_POST
-def cart_add(request, book_id):
+def cart_add(request, product_id):
     cart = Cart(request)
-    product = get_object_or_404(Book, id=book_id)
+    product = get_object_or_404(Book, id=product_id)
     cart.add(product=product, quantity=1, update_quantity=True)
     response = HttpResponse(
         render_to_string(
@@ -31,9 +31,9 @@ def cart_add(request, book_id):
 
 
 @require_POST
-def cart_remove(request, book_id):
+def cart_remove(request, product_id):
     cart = Cart(request)
-    product = get_object_or_404(Book, id=book_id)
+    product = get_object_or_404(Book, id=product_id)
     cart.remove(product)
 
     response = HttpResponse(
@@ -49,10 +49,7 @@ def cart_remove(request, book_id):
 
 def get_lenght_items(request):
     cart = Cart(request)
-    cart_lenght = len(cart)
-    if cart_lenght:
-        return HttpResponse(len(cart), status=200)
-    return HttpResponse()
+    return HttpResponse(len(cart), status=200)
 
 
 @require_POST
@@ -81,3 +78,13 @@ def update_quantity(request, product_id, quantity):
 def get_total_price(request):
     cart = Cart(request)
     return HttpResponse(cart.get_total_price())
+
+
+def delete(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Book, id=product_id)
+    cart.remove(product)
+
+    response = HttpResponse("")
+    response["Hx-Trigger"] = "cartCounterUpdate,cartPriceUpdate"
+    return response

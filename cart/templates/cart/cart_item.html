@@ -3,8 +3,8 @@
     <img src="{{item.product.image.url}}" class="rounded me-3 col-2" style="width: 100px; height: 125px;">
     <!-- ========== Start Description ========== -->
     <div class="col-6 position-relative">
-        <p>{{item.product.title}}</p>
-        <button class="position-absolute bottom-0 p-0 border border-0">
+        <a href="{% url 'library:book' id=item.product.pk  %}" class="d-block">{{item.product.title}}</a>
+        <button hx-delete="{% url 'cart:delete' product_id=item.product.pk %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" class="position-absolute bottom-0 p-0 border border-0">
             <i class="bi bi-trash-fill fs-4"></i>
         </button>
     </div>
