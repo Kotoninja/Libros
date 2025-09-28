@@ -373,5 +373,5 @@ def reset_password_user_request_to_email(request):
 
 
 def cart(request):
-    cart = Cart(request)
-    return HttpResponse(cart)
+    context={"cart":Cart(request)}
+    return render(request,"user/cart.html",context=context)

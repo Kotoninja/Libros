@@ -27,3 +27,7 @@
 .ktn-link-body-primary:hover::after {
     color: rgb(0, 150, 255) !important;
 }
+
+.cursor-not-allowed {
+    cursor: not-allowed !important;
+}

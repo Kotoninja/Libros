@@ -9,9 +9,13 @@ from django.contrib import messages
 import json
 
 
+"""
+TODO Add ajax check
+"""
+
+
 @require_POST
 def cart_add(request, book_id):
-    print("add product to cart")
     cart = Cart(request)
     product = get_object_or_404(Book, id=book_id)
     cart.add(product=product, quantity=1, update_quantity=True)
