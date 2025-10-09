@@ -47,6 +47,12 @@
                 </div>
             </div>
             <!-- ========== End Order ========== -->
+
+            <!-- ========== Start HTMX ========== -->
+            <!-- Cart counter update -->
+            {% comment %} <div hx-get="{% url 'cart:len' %}" hx-swap-oob="true" hx-trigger="cartPriceUpdate from:body" hx-target=".cartCounter" ></div>  {% endcomment %}
+            <!-- ========== End HTMX ========== -->
+            
         </div>
     </div>
 </section>

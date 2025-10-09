@@ -24,6 +24,8 @@ from .forms import (
     ResetPassword,
 )
 from .tokens import account_activation_token
+from django.core.cache import cache
+
 
 def get_errors_from_form(request, form):
     for error_field, error_message in form.errors.as_data().items():
@@ -372,11 +374,19 @@ def reset_password_user_request_to_email(request):
     return render(request, "user/reset_password_user_email.html", context=context)
 
 
-
 def cart(request):
     """
-    TODO: Add cache
     FIXME: Add HTML markings (setup cols)
+    FIXME: Create one htmx controller, which target many elements (cartCounter, cartPrice)
     """
-    context={"cart":Cart(request)}
-    return render(request,"user/user_cart.html",context=context)
+
+    cache_key = f"user_cart_{request.user.id}"
+    cache_data = cache.get(cache_key)
+
+    if cache_data is None:
+        context = {"cart": Cart(request)}
+        cache.set(key=cache_key, value={"context": context}, timeout=600)
+    else:
+        context = cache_data["context"]
+
+    return render(request, "user/user_cart.html", context=context)
