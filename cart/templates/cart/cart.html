@@ -1,8 +1,8 @@
 <section hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
     <div class="container">
-        <div class="row">
+        <div class="row g-3">
             <!-- ========== Start Cart ========== --> 
-            <div class="col-8 px-1">
+            <div class="col-xxl-8 col-xl-8">
                 <div class="bg-light rounded-4 p-3">
                     <!-- ========== Start Cart Description ========== -->
                     <h1 class="mb-0">Cart</h1>
@@ -12,7 +12,7 @@
                     <hr>
 
                     <!-- ========== Start Items ========== -->
-                    <div>
+                    <div class="row g-1">
                         {% for item in cart %}
                             {% include "cart/cart_item.html" %}
                         {% endfor %}
@@ -24,7 +24,7 @@
             
             
             <!-- ========== Start Order ========== -->
-            <div class="col-4 px-1">
+            <div class="col-xxl-4 col-xl-4">
                 <div class="bg-light p-3 rounded-4"> 
                     <h4>Select delivery address</h4>
                     <div class="px-4 text-body-secondary d-flex justify-content-between align-items-center">

@@ -376,7 +376,6 @@ def reset_password_user_request_to_email(request):
 
 def cart(request):
     """
-    FIXME: Add HTML markings (setup cols)
     FIXME: Create one htmx controller, which target many elements (cartCounter, cartPrice)
     """
 
