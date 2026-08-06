@@ -12,7 +12,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.urls import reverse
-from django.conf import settings
+
+from cart.cart import Cart
 
 from .forms import (
     LoginForm,
@@ -23,6 +24,7 @@ from .forms import (
     ResetPassword,
 )
 from .tokens import account_activation_token
+from django.core.cache import cache
 
 
 def get_errors_from_form(request, form):
@@ -370,3 +372,20 @@ def reset_password_user_request_to_email(request):
 
     context |= {"form": form}
     return render(request, "user/reset_password_user_email.html", context=context)
+
+
+def cart(request):
+    """
+    FIXME: Create one htmx controller, which target many elements (cartCounter, cartPrice)
+    """
+
+    cache_key = f"user_cart_{request.user.id}"
+    cache_data = cache.get(cache_key)
+
+    if cache_data is None:
+        context = {"cart": Cart(request)}
+        cache.set(key=cache_key, value={"context": context}, timeout=600)
+    else:
+        context = cache_data["context"]
+
+    return render(request, "user/user_cart.html", context=context)

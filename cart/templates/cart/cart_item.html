@@ -1,0 +1,28 @@
+<!-- ========== Start Item ========== -->
+<div class="d-flex col-12 row g-2 flex-wrap" id="cart_item_{{item.product.pk}}">
+    <img src="{{item.product.image.url}}" class="rounded me-3 col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4" style="width: 100px; height: 125px;">
+    <!-- ========== Start Description ========== -->
+    <div class="col-xxl-5 col-xl-4 col-lg-4 col-md-4 col-sm-7 col-3 position-relative">
+        <a href="{% url 'library:book' id=item.product.pk  %}" class="d-block">{{item.product.title}}</a>
+        <button hx-delete="{% url 'cart:delete' product_id=item.product.pk %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" class="position-absolute bottom-0 p-0 border border-0">
+            <i class="bi bi-trash-fill fs-4"></i>
+        </button>
+    </div>
+    <!-- ========== End Description ========== -->
+    <!-- ========== Start Count ========== -->
+    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6 d-flex justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center">
+            <button hx-post="{% url 'cart:update_quantity' product_id=item.product.pk quantity=item.quantity|add:"-1" %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" type="button" class="btn bg-body-secondary p-1"><i class="bi bi-dash text-black"></i></button>
+            <span class="mx-2 fs-4">{{item.quantity}}</span>
+            <button hx-post="{% url 'cart:update_quantity' product_id=item.product.pk quantity=item.quantity|add:"1" %}" hx-target="#cart_item_{{item.product.pk}}" hx-swap="outerHTML" type="button" class="btn bg-body-secondary p-1"><i class="bi bi-plus text-black"></i></button>
+        </div>
+    </div>
+    <!-- ========== End Count ========== -->
+    <!-- ========== Start Price ========== -->
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6 d-flex justify-content-center align-items-center">
+        <span class="fs-5"><i class="bi bi-wallet2 me-1 my-auto text-black fs-5"></i>{{item.total_price}} &#8381</span>
+    </div>
+<!-- ========== End Price ========== -->
+</div>
+<!-- ========== End Item ========== -->
+
