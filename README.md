@@ -95,3 +95,9 @@ The project is organized into three main Django applications:
 *   **`core`**: Contains the main project settings, root URL configuration, global static files, and base templates.
 *   **`library`**: Handles all functionalities related to books. This includes models for books, views for listing, detail, creation, and searching, as well as templates and a management command for data seeding.
 *   **`user`**: Manages user authentication and profiles. It includes forms for login and registration, views for handling user sessions, password resets, email activation, and user settings pages.
+*   
+
+## Photos
+![First](photos/image1.png)
+![Second](photos/image2.png)
+![Third](photos/image3.png)
